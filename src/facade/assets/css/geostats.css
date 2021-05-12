@@ -1,24 +1,83 @@
-/** Estilos sobreescritos */
-.g-cartografia-flecha-izquierda {
-  color: #00796B !important;
+div.m-panel.m-panzoombar.opened.no-collapsible {
+  margin-left: 80px !important;
 }
-.g-cartografia-flecha-derecha {
-  color: #536DFE !important;
+
+div.m-panel.m-panzoom.opened.no-collapsible {
+  margin-left: 72.5px !important;
 }
-.m-control.activated>button {
+
+.m-control.activated > button {
   color: rgb(255, 0, 0) !important;
 }
 
+.m-areas > div.m-area > div.m-panel.m-geostats.opened {
+  background-color: transparent;
+  box-shadow: none;
+  position: fixed;
+}
+
+div.m-geostats-plugin {
+  -webkit-transition: max-width 0.5s ease 0s, opacity 0.44s ease 0s;
+  transition: max-width 0.5s ease 0s, opacity 0.44s ease 0s;
+  background: #fff;
+  width: 33vw;
+  height: 100vh;
+}
+
+.m-areas > div.m-area > div.m-panel.m-geostats.collapsed {
+  border-radius: 20px;
+  height: 40px;
+}
+
+.m-areas
+  > div.m-area.m-left
+  > div.m-panel.m-geostats.collapsed
+  > button.m-panel-btn.g-cartografia-flecha-derecha {
+  color: #00796b !important;
+  position: fixed;
+  top: 10px;
+  left: 10px;
+}
+
+.m-areas
+  > div.m-area.m-left
+  > div.m-panel.m-geostats.opened
+  > button.m-panel-btn.g-cartografia-flecha-izquierda {
+  background-color: #00796b;
+  color: #fff !important;
+}
+
+div.m-geostats-container {
+  background-color: #fff;
+}
+
+div.m-geostats-title {
+  line-height: 40px;
+  text-align: center;
+  height: 39px;
+  width: 100%;
+  padding: 5 5 5 0;
+  /* margin: 5px; */
+  border-bottom: 1px solid rgba(0, 0, 0, 0.13);
+  font-size: 15px;
+  background-color: rgb(255, 255, 255) !important;
+  color: #404040;
+}
+
+.m-geostats-container > div.body {
+  background-color: #fff;
+}
+
 /** Estilos propios*/
-.info{
-  position : absolute;
-  width : 60%;
-  padding : 5px;
-  top : 10px;
-  left : 20%;
-  background : rgba(245, 245, 245, 0.8);
-  font-size : large;
-  border-radius : 5px;
+.info {
+  position: absolute;
+  width: 60%;
+  padding: 5px;
+  top: 10px;
+  left: 20%;
+  background: rgba(245, 245, 245, 0.8);
+  font-size: large;
+  border-radius: 5px;
   border-style: dashed;
   border-width: 2px;
   text-align: center;

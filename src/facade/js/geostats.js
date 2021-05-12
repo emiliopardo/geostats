@@ -16,7 +16,7 @@ export default class Geostats extends M.Plugin {
    * @param {Object} impl implementation object
    * @api stable
    */
-  constructor() {
+  constructor(test) {
     super();
     /**
      * Facade of the map
@@ -24,6 +24,9 @@ export default class Geostats extends M.Plugin {
      * @type {M.Map}
      */
     this.map_ = null;
+    this.test = test;
+
+    alert(this.test)
 
     /**
      * Array of controls
@@ -54,8 +57,9 @@ export default class Geostats extends M.Plugin {
     // panel para agregar control - no obligatorio
     this.panel_ = new M.ui.Panel('panelGeostats', {
       collapsible: true,
-      position: M.ui.position.TR,
-      collapsedButtonClass: 'g-cartografia-flecha-izquierda',
+      className: 'm-geostats',
+      position: M.ui.position.TL,
+      collapsedButtonClass: 'g-cartografia-flecha-derecha',
     });
     this.panel_.addControls(this.controls_);
     map.addPanels(this.panel_);
