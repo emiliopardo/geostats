@@ -20,7 +20,7 @@ div.m-geostats-plugin {
   -webkit-transition: max-width 0.5s ease 0s, opacity 0.44s ease 0s;
   transition: max-width 0.5s ease 0s, opacity 0.44s ease 0s;
   background: #fff;
-  width: 33vw;
+  width: 25vw;
   height: 100vh;
 }
 
@@ -57,15 +57,34 @@ div.m-geostats-title {
   height: 39px;
   width: 100%;
   padding: 5 5 5 0;
-  /* margin: 5px; */
-  border-bottom: 1px solid rgba(0, 0, 0, 0.13);
+  border-bottom: 2px solid #ff9800;
   font-size: 15px;
-  background-color: rgb(255, 255, 255) !important;
-  color: #404040;
+  background-color: #00796b !important;
+  color: #fff;
 }
 
 .m-geostats-container > div.body {
   background-color: #fff;
+}
+
+div.geostats-input-container{
+  display: block;
+  padding: 5px;
+  border-bottom: 1px solid #ccc;
+}
+
+label.geostats-input-label {
+  display: block;
+  margin-top: 5px;
+  padding: 5px;
+}
+
+input.geostats-input {
+  display: block;
+  margin-top: 5px;
+  padding: 5px;
+  border: 1px solid #ccc !important;
+  background-color: transparent;
 }
 
 /** Estilos propios*/
