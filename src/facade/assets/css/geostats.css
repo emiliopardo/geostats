@@ -66,7 +66,7 @@ div.m-geostats-title {
 div.geostats-input-container {
   display: block;
   padding: 5px;
-  border-bottom: 1px solid #ccc;
+  border-bottom: 1px dashed  #ccc;
 }
 
 label.geostats-input-label {
@@ -86,7 +86,7 @@ input.geostats-input {
   border: 1px solid #ccc;
 }
 
-.geostats-file-upload {
+.geostats-file-upload,.geostats-file-upload:enabled {
   height: 25px;
   width: 97%;
   cursor: pointer;
@@ -101,7 +101,33 @@ input.geostats-input {
   font-family: Muli, "sans-serif";
 }
 
-.geostats-select {
+.geostats-button,.geostats-button:enabled {
+  width: 39%;
+  margin: 5px 25% 5px;
+  padding: 5px;
+  background-color: #fff;
+  font-family: Muli, "sans-serif" !important;
+  cursor: pointer;
+  border-radius: 4px;
+  border: 1px solid rgba(0, 0, 0, 0.4);
+  font-size: 15px;
+  line-height: 25px;
+  opacity: 0.75;
+  -webkit-transition: opacity 0.25s ease 0s;
+  transition: opacity 0.25s ease 0s;
+  color: #404040;
+}
+
+.geostats-button:hover:enabled{
+  color:black;
+  border: 1px solid #2c2c2c;
+}
+
+.geostats-file-upload,.geostats-button:disabled,.geostats-select:disabled{
+  cursor:not-allowed;
+}
+
+.geostats-select, .geostats-select:enabled {
   height: 25px;
   width: 100%;
   cursor: pointer;
@@ -113,6 +139,19 @@ input.geostats-input {
   border-radius: 4px;
   color: #6c6c6c;
   font-family: Muli, "sans-serif";
+}
+
+.geostats-action-button-container {
+  display: block;
+  height: 55px;
+  width: 25vw;
+  background-color: #ffb74d;
+  position: absolute;
+  bottom: 0px;
+}
+
+span.geostats-info {
+  font-size: 0.8em;
 }
 
 /** Estilos propios*/
