@@ -3,6 +3,7 @@ import Geostats from "facade/geostats";
 const map = M.map({
   container: "mapjs",
   controls: ["panzoombar", "scale", "location", "layerswitcher", "mouse"],
+  projection: "EPSG:3857*m",
 });
 
 var secciones_censales = [
