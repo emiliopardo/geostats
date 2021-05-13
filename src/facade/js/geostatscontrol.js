@@ -3,8 +3,8 @@
  * @module M/control/GeostatsControl
  */
 
-import GeostatsImplControl from 'impl/geostatscontrol';
-import template from 'templates/geostats';
+import GeostatsImplControl from "impl/geostatscontrol";
+import template from "templates/geostats";
 
 export default class GeostatsControl extends M.Control {
   /**
@@ -19,18 +19,21 @@ export default class GeostatsControl extends M.Control {
   constructor(secciones) {
     // 1. checks if the implementation can create PluginControl
     if (M.utils.isUndefined(GeostatsImplControl)) {
-      M.exception('La implementación usada no puede crear controles GeostatsControl');
+      M.exception(
+        "La implementación usada no puede crear controles GeostatsControl"
+      );
     }
     // 2. implementation of this control
     const impl = new GeostatsImplControl();
-    super(impl, 'Geostats');
+    super(impl, "Geostats");
 
-    this.secciones_ = secciones
+    this.secciones_ = secciones;
+    this.service_url = null;
+    this.csv_file = null;
 
-    console.log(this.secciones_)
     // captura de customevent lanzado desde impl con coords
-    window.addEventListener('mapclicked', (e) => {
-      this.map_.addLabel('Hola Mundo!', e.detail);
+    window.addEventListener("mapclicked", (e) => {
+      this.map_.addLabel("Hola Mundo!", e.detail);
     });
   }
 
@@ -43,13 +46,62 @@ export default class GeostatsControl extends M.Control {
    * @api stable
    */
   createView(map) {
-    let templateVars = {vars:{'secciones': this.secciones_}};
-    
+    let templateVars = { vars: { secciones: this.secciones_ } };
+
     return new Promise((success, fail) => {
-      const html = M.template.compileSync(template,templateVars);
-      // Añadir código dependiente del DOM
+      const html = M.template.compileSync(template, templateVars);
+      this.addEvents(html);
       success(html);
     });
+  }
+
+  /**
+   * This function load mvt layer
+   *
+   * @public
+   * @function
+   * @param {url}
+   * @api stable
+   */
+  loadLayer() {
+    console.log(this.service_url);
+    console.log(this.csv_file);
+
+    // let mvt = new M.Layer.MVT({
+    //   url: "http://10.240.2.27/data/secciones2018/{z}/{x}/{y}.pbf",
+    //   name: "Capa MVT",
+    //   projection: "EPSG:3857",
+    // });
+
+    // this.map_.addLayer(mvt);
+  }
+
+  addEvents(html) {
+    this.selector = html.querySelector("select#SelectCapa");
+    this.file = html.querySelector("input#SelectedFile");
+    this.load = html.querySelector("button#loadButton");
+
+    this.selector.addEventListener("change", (evt) =>
+      this.setServiceURL(evt, this.selector.value)
+    );
+    this.file.addEventListener("change", (evt) =>
+      this.setCSVFile(evt, this.file.value)
+    );
+    this.load.addEventListener("click", (evt) => this.loadLayer());
+  }
+
+  setCSVFile(evt, file) {
+    this.csv_file = file;
+    if (this.csv_file) {
+      this.load.disabled = false;
+    }
+  }
+
+  setServiceURL(evt, url) {
+    this.service_url = url;
+    if (this.service_url) {
+      this.file.disabled = false;
+    }
   }
 
   /**
@@ -62,10 +114,10 @@ export default class GeostatsControl extends M.Control {
   activate() {
     // calls super to manage de/activation
     super.activate();
-    const div = document.createElement('div');
-    div.id = 'msgInfo';
-    div.classList.add('info');
-    div.innerHTML = 'Haz doble click sobre el mapa';
+    const div = document.createElement("div");
+    div.id = "msgInfo";
+    div.classList.add("info");
+    div.innerHTML = "Haz doble click sobre el mapa";
     this.map_.getContainer().appendChild(div);
 
     this.getImpl().activateClick(this.map_);
@@ -80,7 +132,7 @@ export default class GeostatsControl extends M.Control {
   deactivate() {
     // calls super to manage de/activation
     super.deactivate();
-    const div = document.getElementById('msgInfo');
+    const div = document.getElementById("msgInfo");
     this.map_.getContainer().removeChild(div);
 
     this.getImpl().deactivateClick(this.map_);
@@ -94,7 +146,7 @@ export default class GeostatsControl extends M.Control {
    * @api stable
    */
   getActivationButton(html) {
-    return html.querySelector('.m-geostats button');
+    return html.querySelector(".m-geostats button");
   }
 
   /**
