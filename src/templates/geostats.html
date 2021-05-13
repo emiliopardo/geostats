@@ -6,34 +6,31 @@
     <div class="m-geostats-body">
       <div class="geostats-input-container">
         <label
-          id="label_variable_1"
+          id="labelSelectCapa"
           class="geostats-input-label"
-          for="variable_1"
-          ><i class="g-cartografia-mapa"></i> Seleccionar Capa</label
-        >
-        <select class="geostats-select" name="variable_1" id="variable_1">
+          for="SelectCapa"
+          ><i class="g-cartografia-mapa"></i> Capa</label>
+        <select class="geostats-select" name="SelectCapa" id="SelectCapa">
+          <option value="" selected="selected">Seleccione una opción...</option>
           {{#each secciones}}
           <option value="{{service}}">Secciones censales (Año {{year}})</option>
           {{/each}}
         </select>
+        <span class="geostats-info">* Seleccione el año de la sección censal</span>
       </div>
       <div class="geostats-input-container">
-        <!-- <label
-          id="label_variable_2"
-          class="geostats-input-label"
-          for="variable_2"
-          >Variable 2 :
+        <label 
+        id="labelSelectedFile"
+        class="geostats-input-label"
+        for="SelectedFile"
+          ><i class="g-cartografia-lista"></i> Datos
         </label>
-        <input
-          class="geostats-input"
-          type="text"
-          id="variable_2"
-          name="variable_2"
-        /> -->
-        <label class="geostats-input-label"
-          ><i class="g-cartografia-subir"></i> Subir CSV
-        </label>
-        <input class="geostats-file-upload" type="file" />
+        <input class="geostats-file-upload" type="file" accept=".csv" name="SelectedFile" id="SelectedFile" disabled/>
+        <span class="geostats-info">* Seleccione el fichero con la variable a representar (CSV)</span>
+      </div>
+      <div class="geostats-action-button-container">
+        <button id="loadButton" class="geostats-button" title="Cargar" disabled>
+          <i class="g-cartografia-subir"></i> Cargar</button>
       </div>
     </div>
   </div>
