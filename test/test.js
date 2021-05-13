@@ -20,7 +20,7 @@ var secciones_censales = [
   },
 ];
 
-const mp = new Geostats([secciones_censales]);
+const mp = new Geostats(secciones_censales);
 map.addPlugin(mp);
 
 const add = new M.plugin.AddLayers();

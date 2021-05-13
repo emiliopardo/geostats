@@ -5,18 +5,31 @@
     <!-- BODY-->
     <div class="m-geostats-body">
       <div class="geostats-input-container">
-        <label id="label_variable_1" class="geostats-input-label" for="variable_1">Seleccionar año</label>
-        <!-- <input class="geostats-input" type="sel" id="variable_1" name="variable_1" /> -->
+        <label
+          id="label_variable_1"
+          class="geostats-input-label"
+          for="variable_1"
+          >Seleccionar año</label
+        >
         <select class="geostats-select" name="variable_1" id="variable_1">
           {{#each secciones}}
-          <option value="{{service}}">{{year}}</option>
+          <option value="{{service}}">Secciones censales (Año {{year}})</option>
           {{/each}}
-
         </select>
       </div>
       <div class="geostats-input-container">
-        <label id="label_variable_2" class="geostats-input-label" for="variable_2">Variable 2 : </label>
-        <input class="geostats-input" type="text" id="variable_2" name="variable_2" />
+        <label
+          id="label_variable_2"
+          class="geostats-input-label"
+          for="variable_2"
+          >Variable 2 :
+        </label>
+        <input
+          class="geostats-input"
+          type="text"
+          id="variable_2"
+          name="variable_2"
+        />
       </div>
       <button
         id="ctrlTest"
@@ -26,6 +39,3 @@
     </div>
   </div>
 </div>
-
-
-

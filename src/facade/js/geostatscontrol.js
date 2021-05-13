@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 /**
  * @module M/control/GeostatsControl
  */
@@ -26,7 +27,7 @@ export default class GeostatsControl extends M.Control {
 
     this.secciones_ = secciones
 
-    alert(this.secciones_)
+    console.log(this.secciones_)
     // captura de customevent lanzado desde impl con coords
     window.addEventListener('mapclicked', (e) => {
       this.map_.addLabel('Hola Mundo!', e.detail);
