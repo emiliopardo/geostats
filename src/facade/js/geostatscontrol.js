@@ -42,26 +42,7 @@ export default class GeostatsControl extends M.Control {
    * @api stable
    */
   createView(map) {
-    let templateVars = {'secciones': this.secciones_};
-    if (!M.template.compileSync) { // JGL: retrocompatibilidad Mapea4
-      M.template.compileSync = (string, options) => {
-        let templateCompiled;
-        let templateVars = {'secciones': this.secciones_};
-        let parseToHtml;
-        if (!M.utils.isUndefined(options)) {
-          templateVars = M.utils.extends(templateVars, options.vars);
-          parseToHtml = options.parseToHtml;
-        }
-        const templateFn = Handlebars.compile(string);
-        const htmlText = templateFn(templateVars);
-        if (parseToHtml !== false) {
-          templateCompiled = M.utils.stringToHtml(htmlText);
-        } else {
-          templateCompiled = htmlText;
-        }
-        return templateCompiled;
-      };
-    }
+    let templateVars = {vars:{'secciones': this.secciones_}};
     
     return new Promise((success, fail) => {
       const html = M.template.compileSync(template,templateVars);
