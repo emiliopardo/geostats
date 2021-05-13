@@ -42,6 +42,7 @@ export default class GeostatsControl extends M.Control {
    * @api stable
    */
   createView(map) {
+    let templateVars = {'secciones': this.secciones_};
     if (!M.template.compileSync) { // JGL: retrocompatibilidad Mapea4
       M.template.compileSync = (string, options) => {
         let templateCompiled;
@@ -63,7 +64,7 @@ export default class GeostatsControl extends M.Control {
     }
     
     return new Promise((success, fail) => {
-      const html = M.template.compileSync(template);
+      const html = M.template.compileSync(template,templateVars);
       // Añadir código dependiente del DOM
       success(html);
     });
