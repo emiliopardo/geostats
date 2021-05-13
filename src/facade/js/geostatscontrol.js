@@ -15,7 +15,7 @@ export default class GeostatsControl extends M.Control {
    * @extends {M.Control}
    * @api stable
    */
-  constructor() {
+  constructor(secciones) {
     // 1. checks if the implementation can create PluginControl
     if (M.utils.isUndefined(GeostatsImplControl)) {
       M.exception('La implementación usada no puede crear controles GeostatsControl');
@@ -24,6 +24,9 @@ export default class GeostatsControl extends M.Control {
     const impl = new GeostatsImplControl();
     super(impl, 'Geostats');
 
+    this.secciones_ = secciones
+
+    alert(this.secciones_)
     // captura de customevent lanzado desde impl con coords
     window.addEventListener('mapclicked', (e) => {
       this.map_.addLabel('Hola Mundo!', e.detail);
@@ -42,7 +45,7 @@ export default class GeostatsControl extends M.Control {
     if (!M.template.compileSync) { // JGL: retrocompatibilidad Mapea4
       M.template.compileSync = (string, options) => {
         let templateCompiled;
-        let templateVars = {};
+        let templateVars = {'secciones': this.secciones_};
         let parseToHtml;
         if (!M.utils.isUndefined(options)) {
           templateVars = M.utils.extends(templateVars, options.vars);

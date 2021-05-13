@@ -1,14 +1,27 @@
-import Geostats from 'facade/geostats';
+import Geostats from "facade/geostats";
 
 const map = M.map({
-  container: 'mapjs',
-  controls: ['panzoombar','scale','location','layerswitcher','mouse']
+  container: "mapjs",
+  controls: ["panzoombar", "scale", "location", "layerswitcher", "mouse"],
 });
 
-const mp = new Geostats('parametro 1');
+var secciones_censales = [
+  {
+    year: 2018,
+    service: "http://10.240.2.27/data/secciones2018/{z}/{x}/{y}.pbf",
+  },
+  {
+    year: 2017,
+    service: "http://10.240.2.27/data/secciones2017/{z}/{x}/{y}.pbf",
+  },
+  {
+    year: 2016,
+    service: "http://10.240.2.27/data/secciones2016/{z}/{x}/{y}.pbf",
+  },
+];
+
+const mp = new Geostats([secciones_censales]);
 map.addPlugin(mp);
 
 const add = new M.plugin.AddLayers();
 map.addPlugin(add);
-
-

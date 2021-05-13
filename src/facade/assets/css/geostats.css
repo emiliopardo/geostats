@@ -87,6 +87,18 @@ input.geostats-input {
   background-color: transparent;
 }
 
+.geostats-select {
+  height: 25px;
+  width: 100%;
+  cursor: pointer;
+  padding: 0 7px;
+  background-color: #fff;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  color: #6c6c6c;
+  font-family: Muli, "sans-serif";
+}
+
 /** Estilos propios*/
 .info {
   position: absolute;
