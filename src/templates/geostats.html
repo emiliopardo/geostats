@@ -9,7 +9,7 @@
           id="label_variable_1"
           class="geostats-input-label"
           for="variable_1"
-          >Seleccionar año</label
+          ><i class="g-cartografia-mapa"></i> Seleccionar Capa</label
         >
         <select class="geostats-select" name="variable_1" id="variable_1">
           {{#each secciones}}
@@ -18,7 +18,7 @@
         </select>
       </div>
       <div class="geostats-input-container">
-        <label
+        <!-- <label
           id="label_variable_2"
           class="geostats-input-label"
           for="variable_2"
@@ -29,13 +29,12 @@
           type="text"
           id="variable_2"
           name="variable_2"
-        />
+        /> -->
+        <label class="geostats-input-label"
+          ><i class="g-cartografia-subir"></i> Subir CSV
+        </label>
+        <input class="geostats-file-upload" type="file" />
       </div>
-      <button
-        id="ctrlTest"
-        class="g-cartografia-bandera"
-        title="AddFeature"
-      ></button>
     </div>
   </div>
 </div>

@@ -6,10 +6,6 @@ div.m-panel.m-panzoom.opened.no-collapsible {
   margin-left: 72.5px !important;
 }
 
-.m-control.activated > button {
-  color: rgb(255, 0, 0) !important;
-}
-
 .m-areas > div.m-area > div.m-panel.m-geostats.opened {
   background-color: transparent;
   box-shadow: none;
@@ -67,7 +63,7 @@ div.m-geostats-title {
   background-color: #fff;
 }
 
-div.geostats-input-container{
+div.geostats-input-container {
   display: block;
   padding: 5px;
   border-bottom: 1px solid #ccc;
@@ -80,18 +76,38 @@ label.geostats-input-label {
 }
 
 input.geostats-input {
+  height: 25px;
+  width: 95%;
+  cursor: pointer;
   display: block;
-  margin-top: 5px;
   padding: 5px;
-  border: 1px solid #ccc !important;
-  background-color: transparent;
+  margin-top: 5px;
+  background-color: #fff;
+  border: 1px solid #ccc;
+}
+
+.geostats-file-upload {
+  height: 25px;
+  width: 97%;
+  cursor: pointer;
+  display: block;
+  padding: 5px;
+  margin-top: 5px;
+  margin-bottom: 5px;
+  background-color: #fff;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  color: #6c6c6c;
+  font-family: Muli, "sans-serif";
 }
 
 .geostats-select {
   height: 25px;
   width: 100%;
   cursor: pointer;
-  padding: 0 7px;
+  padding: 5px;
+  margin-top: 5px;
+  margin-bottom: 5px;
   background-color: #fff;
   border: 1px solid #ccc;
   border-radius: 4px;
