@@ -63,18 +63,7 @@ export default class GeostatsControl extends M.Control {
    * @param {url}
    * @api stable
    */
-  loadLayer() {
-    console.log(this.service_url);
-    console.log(this.csv_file);
 
-    // let mvt = new M.Layer.MVT({
-    //   url: "http://10.240.2.27/data/secciones2018/{z}/{x}/{y}.pbf",
-    //   name: "Capa MVT",
-    //   projection: "EPSG:3857",
-    // });
-
-    // this.map_.addLayer(mvt);
-  }
 
   addEvents(html) {
     this.selector = html.querySelector("select#SelectCapa");
@@ -102,6 +91,19 @@ export default class GeostatsControl extends M.Control {
     if (this.service_url) {
       this.file.disabled = false;
     }
+  }
+
+  loadLayer() {
+    console.log(this.service_url);
+    console.log(this.csv_file);
+
+    // let mvt = new M.Layer.MVT({
+    //   url: "http://10.240.2.27/data/secciones2018/{z}/{x}/{y}.pbf",
+    //   name: "Capa MVT",
+    //   projection: "EPSG:3857",
+    // });
+
+    // this.map_.addLayer(mvt);
   }
 
   /**
