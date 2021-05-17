@@ -5,6 +5,7 @@
 
 import GeostatsImplControl from "impl/geostatscontrol";
 import template from "templates/geostats";
+import Papa from "papaparse";
 
 export default class GeostatsControl extends M.Control {
   /**
@@ -30,6 +31,8 @@ export default class GeostatsControl extends M.Control {
     this.secciones_ = secciones;
     this.service_url = null;
     this.csv_file = null;
+    this.json = null;
+    this.mvt = null;
 
     // captura de customevent lanzado desde impl con coords
     window.addEventListener("mapclicked", (e) => {
@@ -64,7 +67,6 @@ export default class GeostatsControl extends M.Control {
    * @api stable
    */
 
-
   addEvents(html) {
     this.selector = html.querySelector("select#SelectCapa");
     this.file = html.querySelector("input#SelectedFile");
@@ -94,17 +96,29 @@ export default class GeostatsControl extends M.Control {
   }
 
   loadLayer() {
-    console.log(this.service_url);
-    console.log(this.csv_file);
-
-    // let mvt = new M.Layer.MVT({
-    //   url: "http://10.240.2.27/data/secciones2018/{z}/{x}/{y}.pbf",
-    //   name: "Capa MVT",
-    //   projection: "EPSG:3857",
-    // });
-
-    // this.map_.addLayer(mvt);
+    let files = this.file.files;
+    Papa.parse(files[0], {
+      header: true,
+      dynamicTyping: true,
+      complete: (results) => {
+        this.renderDataset(results);
+      },
+    });
   }
+
+  renderDataset(dataset) {
+    this.json = JSON.stringify(dataset, null, 2);
+    console.log(this.json);
+
+    let mvt = new M.Layer.MVT({
+      url: "http://10.240.2.27/data/secciones2018/{z}/{x}/{y}.pbf",
+      name: "Capa MVT",
+      projection: "EPSG:3857",
+    });
+
+    this.map_.addLayer(mvt);
+  }
+
 
   /**
    * This function is called on the control activation
