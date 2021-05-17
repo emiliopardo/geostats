@@ -110,13 +110,26 @@ export default class GeostatsControl extends M.Control {
     this.json = JSON.stringify(dataset, null, 2);
     console.log(this.json);
 
+    let layerWMS = new M.layer.WMS({
+      url: 'http://www.ideandalucia.es/wms/ortofoto2016?',
+      name: 'ortofotografia_2016_infrarrojo',
+      legend: 'ortofotografia_2016_infrarrojo',
+      transparent: true,
+      tiled: true
+    });
+
+    this.map_.addLayers(layerWMS);
+
+    console.log(this.map_);
+
+
     let mvt = new M.Layer.MVT({
       url: "http://10.240.2.27/data/secciones2018/{z}/{x}/{y}.pbf",
       name: "Capa MVT",
       projection: "EPSG:3857",
     });
 
-    this.map_.addLayer(mvt);
+    this.map_.addLayers(mvt);
   }
 
 
