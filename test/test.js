@@ -3,6 +3,9 @@ import Geostats from "facade/geostats";
 const map = M.map({
   container: "mapjs",
   controls: ["panzoombar", "scale", "location", "layerswitcher", "mouse"],
+  layers: [new M.layer.OSM()],
+  center: [-543431,4503560],
+  zoom: 6,
   projection: "EPSG:3857*m",
 });
 
