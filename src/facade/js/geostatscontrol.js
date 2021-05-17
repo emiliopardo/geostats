@@ -108,30 +108,28 @@ export default class GeostatsControl extends M.Control {
 
   renderDataset(dataset) {
     this.json = JSON.stringify(dataset, null, 2);
-    console.log(this.json);
+    //console.log(this.json);
 
-    let layerWMS = new M.layer.WMS({
-      url: 'http://www.ideandalucia.es/wms/ortofoto2016?',
-      name: 'ortofotografia_2016_infrarrojo',
-      legend: 'ortofotografia_2016_infrarrojo',
-      transparent: true,
-      tiled: true
-    });
-
-    this.map_.addLayers(layerWMS);
-
-    console.log(this.map_);
-
-
-    let mvt = new M.Layer.MVT({
+    let mvt = new M.layer.MVT({
       url: "http://10.240.2.27/data/secciones2018/{z}/{x}/{y}.pbf",
       name: "Capa MVT",
       projection: "EPSG:3857",
     });
 
     this.map_.addLayers(mvt);
-  }
 
+    let estilo = new M.style.Polygon({
+      fill: {
+        color: "green",
+      },
+      stroke: {
+        color: "#fff",
+        width: 0.5,
+      },
+    });
+
+    mvt.setStyle(estilo);
+  }
 
   /**
    * This function is called on the control activation
