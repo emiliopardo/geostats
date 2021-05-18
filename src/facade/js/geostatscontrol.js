@@ -109,8 +109,7 @@ export default class GeostatsControl extends M.Control {
   renderDataset(dataset) {
     this.json = JSON.stringify(dataset, null, 2);
     //console.log(this.json);
-
-    console.log(this.service_url)
+    //console.log(this.service_url)
 
     if(this.mvt){
       this.map_.removeMVT(this.mvt)
