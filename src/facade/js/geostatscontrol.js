@@ -110,13 +110,19 @@ export default class GeostatsControl extends M.Control {
     this.json = JSON.stringify(dataset, null, 2);
     //console.log(this.json);
 
-    let mvt = new M.layer.MVT({
-      url: "http://10.240.2.27/data/secciones2018/{z}/{x}/{y}.pbf",
+    console.log(this.service_url)
+
+    if(this.mvt){
+      this.map_.removeMVT(this.mvt)
+    }
+
+    this.mvt = new M.layer.MVT({
+      url: this.service_url,
       name: "Capa MVT",
       projection: "EPSG:3857",
     });
 
-    this.map_.addLayers(mvt);
+    this.map_.addLayers(this.mvt);
 
     let estilo = new M.style.Polygon({
       fill: {
@@ -128,7 +134,7 @@ export default class GeostatsControl extends M.Control {
       },
     });
 
-    mvt.setStyle(estilo);
+    this.mvt.setStyle(estilo);
   }
 
   /**
