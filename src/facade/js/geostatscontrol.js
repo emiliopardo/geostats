@@ -144,34 +144,45 @@ export default class GeostatsControl extends M.Control {
 
   setServiceURL(evt, url) {
     this.service_url = url;
-    const estilo =new M.style.Polygon({
-      fill: {
-        color: "green",
-      },
-      stroke: {
-        color: "#fff",
-        width: 0.5,
-      },
-    });
-    
+
     if (this.service_url) {
       if (this.mvt) {
         this.map_.removeMVT(this.mvt);
       }
-      this.mvt = new M.layer.MVT({
-        url: this.service_url,
-        name: "Capa MVT",
-        projection: "EPSG:3857",
-      });
-
-      this.mvt.setStyle(estilo);
-
-      this.map_.addLayers(this.mvt);
     }
 
-    this.mvt.on(M.evt.LOAD,(evt)=>{
-      alert("se cargo la capa");
-    })
+    this.getImpl().loadMVT("Capa MVT",url).then((result) => {
+      this.mvt=result;
+
+      // let estilo2 = new M.style.Polygon({
+      //   fill: {
+      //     color: 'pink',
+      //     opacity: 0.5,
+      //   },
+      //   stroke: {
+      //     color: '#FF0000',
+      //     width: 2
+      //   }
+      // });
+
+      // this.mvt.setStyle(estilo2);
+
+      let  estilo = new ol.style.Style({
+        fill: new ol.style.Fill({
+          color: "rgba(124, 124, 124,0.9)"
+        }),
+        stroke: new ol.style.Stroke({
+          color: "rgba(255, 255, 255,0.9)",
+          width: 0.5,
+          lineCap: 'round'
+        })
+      });
+
+       let layerOL = this.mvt.getImpl().getOL3Layer();
+       layerOL.setStyle(estilo);
+
+      this.map_.addLayers(this.mvt);
+    });
     this.file.disabled = false;
   }
 
