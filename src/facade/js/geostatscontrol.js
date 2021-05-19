@@ -199,11 +199,32 @@ export default class GeostatsControl extends M.Control {
     this.activate();
     this.colorValues = [];
     for (let index = 0; index < this.uValues.length; index++) {
-      let randomColor = Math.floor(Math.random()*16777215).toString(16);
-      this.colorValues.push('#'+randomColor);  
+      let randomColor = this.getRandomColor();
+      this.colorValues.push(randomColor);  
     }
     this.serie.setColors(this.colorValues);
-    console.log(this.serie);
+    
+
+    let bounds = this.serie.bounds
+    let colors = this.serie.colors;
+    console.log(colors)
+    
+    this.mvt.applyStyle_(new M.style.Polygon({
+      fill: {
+        color: function(feature,map) {
+          let feature_name =feature.getAttribute('municipio');
+          let index_number =bounds.indexOf(feature_name);
+          // Definimos una simbologia en funcion del valor de un atributo
+          return colors[index_number]
+        },
+        opacity: 0.9
+      },
+      stroke: {
+        color: '#000',
+        width: 0.5,
+        opacity: 0.9
+      }
+    }))
   }
 
   renderDataset(dataset) {
@@ -216,5 +237,14 @@ export default class GeostatsControl extends M.Control {
     }
      this.serie = new geostats(municipios);
      this.uValues = this.serie.getClassUniqueValues();
+  }
+
+  getRandomColor() {
+    var letters = '0123456789ABCDEF';
+    var color = '#';
+    for (var i = 0; i < 6; i++) {
+      color += letters[Math.floor(Math.random() * 16)];
+    }
+    return color;
   }
 }
