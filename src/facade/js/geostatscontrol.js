@@ -34,10 +34,6 @@ export default class GeostatsControl extends M.Control {
     this.json = null;
     this.mvt = null;
 
-    // captura de customevent lanzado desde impl con coords
-    window.addEventListener("mapclicked", (e) => {
-      this.map_.addLabel("Hola Mundo!", e.detail);
-    });
   }
 
   /**
@@ -81,62 +77,6 @@ export default class GeostatsControl extends M.Control {
     this.load.addEventListener("click", (evt) => this.loadLayer());
   }
 
-  setCSVFile(evt, file) {
-    this.csv_file = file;
-    if (this.csv_file) {
-      this.load.disabled = false;
-    }
-  }
-
-  setServiceURL(evt, url) {
-    this.service_url = url;
-    if (this.service_url) {
-      this.file.disabled = false;
-    }
-  }
-
-  loadLayer() {
-    let files = this.file.files;
-    Papa.parse(files[0], {
-      header: true,
-      dynamicTyping: true,
-      complete: (results) => {
-        this.renderDataset(results);
-      },
-    });
-  }
-
-  renderDataset(dataset) {
-    this.json = JSON.stringify(dataset, null, 2);
-    //console.log(this.json);
-
-    console.log(this.service_url)
-
-    if(this.mvt){
-      this.map_.removeMVT(this.mvt)
-    }
-
-    this.mvt = new M.layer.MVT({
-      url: this.service_url,
-      name: "Capa MVT",
-      projection: "EPSG:3857",
-    });
-
-    this.map_.addLayers(this.mvt);
-
-    let estilo = new M.style.Polygon({
-      fill: {
-        color: "green",
-      },
-      stroke: {
-        color: "#fff",
-        width: 0.5,
-      },
-    });
-
-    this.mvt.setStyle(estilo);
-  }
-
   /**
    * This function is called on the control activation
    *
@@ -147,13 +87,7 @@ export default class GeostatsControl extends M.Control {
   activate() {
     // calls super to manage de/activation
     super.activate();
-    const div = document.createElement("div");
-    div.id = "msgInfo";
-    div.classList.add("info");
-    div.innerHTML = "Haz doble click sobre el mapa";
-    this.map_.getContainer().appendChild(div);
-
-    this.getImpl().activateClick(this.map_);
+    this.getImpl().activate(this.map_);
   }
   /**
    * This function is called on the control deactivation
@@ -165,10 +99,7 @@ export default class GeostatsControl extends M.Control {
   deactivate() {
     // calls super to manage de/activation
     super.deactivate();
-    const div = document.getElementById("msgInfo");
-    this.map_.getContainer().removeChild(div);
-
-    this.getImpl().deactivateClick(this.map_);
+    this.getImpl().deactivate(this.map_);
   }
   /**
    * This function gets activation button
@@ -195,4 +126,61 @@ export default class GeostatsControl extends M.Control {
   }
 
   // Add your own functions
+
+  setCSVFile(evt, file) {
+    this.csv_file = file;
+    if (this.csv_file) {
+      let files = this.file.files;
+      Papa.parse(files[0], {
+        header: true,
+        dynamicTyping: true,
+        complete: (results) => {
+          this.renderDataset(results);
+        },
+      });
+      this.load.disabled = false;
+    }
+  }
+
+  setServiceURL(evt, url) {
+    this.service_url = url;
+    const estilo =new M.style.Polygon({
+      fill: {
+        color: "green",
+      },
+      stroke: {
+        color: "#fff",
+        width: 0.5,
+      },
+    });
+    
+    if (this.service_url) {
+      if (this.mvt) {
+        this.map_.removeMVT(this.mvt);
+      }
+      this.mvt = new M.layer.MVT({
+        url: this.service_url,
+        name: "Capa MVT",
+        projection: "EPSG:3857",
+      });
+
+      this.mvt.setStyle(estilo);
+
+      this.map_.addLayers(this.mvt);
+    }
+
+    this.mvt.on(M.evt.LOAD,(evt)=>{
+      alert("se cargo la capa");
+    })
+    this.file.disabled = false;
+  }
+
+  loadLayer() {
+    this.activate();
+  }
+
+  renderDataset(dataset) {
+    this.json = JSON.stringify(dataset, null, 2);
+    console.log(this.json);
+  }
 }
