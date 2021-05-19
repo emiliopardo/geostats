@@ -6,6 +6,7 @@
 import GeostatsImplControl from "impl/geostatscontrol";
 import template from "templates/geostats";
 import Papa from "papaparse";
+import geostats from "geostats";
 
 export default class GeostatsControl extends M.Control {
   /**
@@ -33,7 +34,6 @@ export default class GeostatsControl extends M.Control {
     this.csv_file = null;
     this.json = null;
     this.mvt = null;
-
   }
 
   /**
@@ -142,47 +142,59 @@ export default class GeostatsControl extends M.Control {
     }
   }
 
+  setSerie(json) {
+    let serie = new geostats(json);
+    console.log(serie);
+  }
+
   setServiceURL(evt, url) {
     this.service_url = url;
+
+    const estilo2 = new M.style.Polygon({
+      fill: {
+        color: "#7c7c7c",
+        opacity: 0.9,
+      },
+      stroke: {
+        color: "#FFFFFF",
+        opacity: 0.9,
+        width: 0.5,
+      },
+    });
 
     if (this.service_url) {
       if (this.mvt) {
         this.map_.removeMVT(this.mvt);
       }
+      this.mvt = new M.layer.MVT({
+        url: this.service_url,
+        name: "Capa MVT",
+        projection: "EPSG:3857",
+      });
+      this.map_.addLayers(this.mvt);
+      console.log(this.mvt);
+      this.mvt.applyStyle_(estilo2);
+      
+      // this.getImpl()
+      // .loadMVT("Capa MVT", url)
+      // .then((result) => {
+      //   this.mvt = result;
+      //   let estilo = new ol.style.Style({
+      //     fill: new ol.style.Fill({
+      //       color: "rgba(124, 124, 124,0.9)",
+      //     }),
+      //     stroke: new ol.style.Stroke({
+      //       color: "rgba(255, 255, 255,0.9)",
+      //       width: 0.5,
+      //       lineCap: "round",
+      //     }),
+      //   });
+      //   let layerOL = this.mvt.getImpl().getOL3Layer();
+      //   layerOL.setStyle(estilo);
+      //   this.map_.addLayers(this.mvt);
+      // });
     }
 
-    this.getImpl().loadMVT("Capa MVT",url).then((result) => {
-      this.mvt=result;
-
-      // let estilo2 = new M.style.Polygon({
-      //   fill: {
-      //     color: 'pink',
-      //     opacity: 0.5,
-      //   },
-      //   stroke: {
-      //     color: '#FF0000',
-      //     width: 2
-      //   }
-      // });
-
-      // this.mvt.setStyle(estilo2);
-
-      let  estilo = new ol.style.Style({
-        fill: new ol.style.Fill({
-          color: "rgba(124, 124, 124,0.9)"
-        }),
-        stroke: new ol.style.Stroke({
-          color: "rgba(255, 255, 255,0.9)",
-          width: 0.5,
-          lineCap: 'round'
-        })
-      });
-
-       let layerOL = this.mvt.getImpl().getOL3Layer();
-       layerOL.setStyle(estilo);
-
-      this.map_.addLayers(this.mvt);
-    });
     this.file.disabled = false;
   }
 
@@ -192,6 +204,17 @@ export default class GeostatsControl extends M.Control {
 
   renderDataset(dataset) {
     this.json = JSON.stringify(dataset, null, 2);
+
     console.log(this.json);
+
+    for (var i = 0; i < dataset.data.length; i++) {
+      var obj = dataset.data[i];
+      console.log(obj.municipio);
+
+      //let items = []; // will store values
+    }
+    // let serie = new geostats(this.json);
+    // //console.log(this.json);
+    // console.log(serie);
   }
 }
