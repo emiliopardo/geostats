@@ -154,17 +154,7 @@ span.geostats-info {
   font-size: 0.8em;
 }
 
-/** Estilos propios*/
-.info {
-  position: absolute;
-  width: 60%;
-  padding: 5px;
-  top: 10px;
-  left: 20%;
-  background: rgba(245, 245, 245, 0.8);
-  font-size: large;
-  border-radius: 5px;
-  border-style: dashed;
-  border-width: 2px;
+
+div.m-message{
   text-align: center;
 }
