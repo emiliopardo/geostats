@@ -34,6 +34,9 @@ export default class GeostatsControl extends M.Control {
     this.csv_file = null;
     this.json = null;
     this.mvt = null;
+    this.serie = null;
+    this.uValues = null;
+    this.colorValues = null;
   }
 
   /**
@@ -142,11 +145,6 @@ export default class GeostatsControl extends M.Control {
     }
   }
 
-  setSerie(json) {
-    let serie = new geostats(json);
-    console.log(serie);
-  }
-
   setServiceURL(evt, url) {
     this.service_url = url;
 
@@ -199,21 +197,24 @@ export default class GeostatsControl extends M.Control {
 
   loadLayer() {
     this.activate();
+    this.colorValues = [];
+    for (let index = 0; index < this.uValues.length; index++) {
+      let randomColor = Math.floor(Math.random()*16777215).toString(16);
+      this.colorValues.push('#'+randomColor);  
+    }
+    this.serie.setColors(this.colorValues);
+    console.log(this.serie);
   }
 
   renderDataset(dataset) {
     this.json = JSON.stringify(dataset, null, 2);
-
-    console.log(this.json);
-
+    let municipios = [];
+    
     for (var i = 0; i < dataset.data.length; i++) {
       var obj = dataset.data[i];
-      console.log(obj.municipio);
-
-      //let items = []; // will store values
+        municipios.push(obj.municipio);
     }
-    // let serie = new geostats(this.json);
-    // //console.log(this.json);
-    // console.log(serie);
+     this.serie = new geostats(municipios);
+     this.uValues = this.serie.getClassUniqueValues();
   }
 }
