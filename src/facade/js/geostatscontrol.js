@@ -172,7 +172,6 @@ export default class GeostatsControl extends M.Control {
         projection: "EPSG:3857",
       });
       this.map_.addLayers(this.mvt);
-      console.log(this.mvt);
       this.mvt.applyStyle_(estilo2);
       
       // this.getImpl()
