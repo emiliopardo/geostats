@@ -13,10 +13,10 @@
         <select class="geostats-select" name="SelectCapa" id="SelectCapa">
           <option value="" selected="selected">Seleccione una opción...</option>
           {{#each secciones}}
-          <option value="{{service}}">Secciones censales (Año {{year}})</option>
+          <option value="{{service}}">{{year}}</option>
           {{/each}}
         </select>
-        <span class="geostats-info">* Seleccione el año de la sección censal</span>
+        <span class="geostats-info">* Seleccione una capa</span>
       </div>
       <div class="geostats-input-container">
         <label 
