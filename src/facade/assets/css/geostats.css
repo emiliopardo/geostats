@@ -66,13 +66,19 @@ div.m-geostats-title {
 div.geostats-input-container {
   display: block;
   padding: 5px;
-  border-bottom: 1px dashed  #ccc;
+  border-bottom: 1px dashed #ccc;
 }
 
 label.geostats-input-label {
   display: block;
   margin-top: 5px;
   padding: 5px;
+}
+
+label.geostats-input-label-inline {
+  margin-top: 5px;
+  padding: 5px;
+  font-size: 0.9em;
 }
 
 input.geostats-input {
@@ -86,7 +92,14 @@ input.geostats-input {
   border: 1px solid #ccc;
 }
 
-.geostats-file-upload,.geostats-file-upload:enabled {
+.geostats-checkbox {
+  margin-top: 5px;
+  padding: 5px;
+  vertical-align:middle;
+}
+
+.geostats-file-upload,
+.geostats-file-upload:enabled {
   height: 25px;
   width: 97%;
   cursor: pointer;
@@ -101,7 +114,8 @@ input.geostats-input {
   font-family: Muli, "sans-serif";
 }
 
-.geostats-button,.geostats-button:enabled {
+.geostats-button,
+.geostats-button:enabled {
   width: 39%;
   margin: 5px 25% 5px;
   padding: 5px;
@@ -118,16 +132,20 @@ input.geostats-input {
   color: #404040;
 }
 
-.geostats-button:hover:enabled{
-  color:black;
+.geostats-button:hover:enabled {
+  color: black;
   border: 1px solid #2c2c2c;
 }
 
-.geostats-file-upload,.geostats-button:disabled,.geostats-select:disabled{
-  cursor:not-allowed;
+.geostats-checkbox:disabled,
+.geostats-file-upload,
+.geostats-button:disabled,
+.geostats-select:disabled {
+  cursor: not-allowed;
 }
 
-.geostats-select, .geostats-select:enabled {
+.geostats-select,
+.geostats-select:enabled {
   height: 25px;
   width: 100%;
   cursor: pointer;
@@ -154,7 +172,82 @@ span.geostats-info {
   font-size: 0.8em;
 }
 
-
-div.m-message{
+div.m-message {
   text-align: center;
+}
+
+caption {
+  display: none;
+}
+
+/* div {
+  box-sizing: border-box;
+} */
+
+.table-container {
+  margin: 1em auto;
+  width: 100%;
+  max-width: 600px;
+  font-size: 0.8rem;
+  border-collapse: collapse;
+}
+
+.m-dialog.success div.m-title {
+  background-color: #00796b !important;
+}
+
+.m-dialog.success div.m-button > button,
+.m-dialog.success div.m-title {
+  background-color: #00796b !important;
+}
+
+.flag-icon {
+  margin-right: 0.1em;
+}
+
+td {
+  border: 1px solid #d9d9d9;
+  padding: 0.5em;
+}
+
+th {
+  background: #d9534f;
+  color: white;
+  padding: 0.5em;
+
+  border: 1px solid #d9534f;
+}
+
+/* .flex-row {
+  width: 25%;
+} */
+
+.flex-row,
+.flex-cell {
+  text-align: center;
+}
+
+@media only screen and (max-width: 767px) {
+  th,
+  td {
+    width: auto;
+    display: block;
+    border: 0;
+  }
+
+  th {
+    border-left: solid 1px #1565c0;
+    border-right: solid 1px #1565c0;
+    border-bottom: solid 1px #1565c0;
+  }
+
+  td {
+    border-left: solid 1px #d9d9d9;
+    border-right: solid 1px #d9d9d9;
+    border-bottom: solid 1px #d9d9d9;
+  }
+
+  .flex-row {
+    width: 100%;
+  }
 }
