@@ -225,7 +225,6 @@ export default class GeostatsControl extends M.Control {
 
   renderDatasetMetadata(datasetMetadata) {
     this.infoResults = this.element.querySelector("div#parseResults");
-    console.log(datasetMetadata);
     let html =
       "<p>delimiter: " +
       datasetMetadata.delimiter +
