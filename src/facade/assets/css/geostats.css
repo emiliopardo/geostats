@@ -201,7 +201,7 @@ caption {
   margin-right: 0.1em;
 }
 
-td {
+td.errorMessage {
   border: 1px solid #d9d9d9;
   padding: 0.5em;
 }

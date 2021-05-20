@@ -252,13 +252,13 @@ export default class GeostatsControl extends M.Control {
     for (let index = 0; index < datasetErrorsMessage.length; index++) {
       html +=
         "<tr class='flex-table row' role='rowgroup'>\n" +
-        "<td class='flex-row first' role='cell'><span class='flag-icon flag-icon-gb'></span>" +
+        "<td class='errorMessage flex-row first' role='cell'><span class='flag-icon flag-icon-gb'></span>" +
         datasetErrorsMessage[index].row +
         "</td>\n" +
-        "<td class='flex-row' role='cell'>" +
+        "<td class='errorMessage flex-row' role='cell'>" +
         datasetErrorsMessage[index].code +
         "</td>\n" +
-        "<td class='flex-row' role='cell'>" +
+        "<td class='errorMessage flex-row' role='cell'>" +
         datasetErrorsMessage[index].message +
         "</td>\n" +
         "</tr>\n";
