@@ -20,7 +20,7 @@ export default class GeostatsControl extends M.impl.Control {
   }
 
   activate() {
-    M.dialog.info("Cargo Datos");
+    M.dialog.info("Se enlaza el CSV con el MVT y se representa");
   }
 
   // Ocurre al desactivar

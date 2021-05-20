@@ -207,7 +207,6 @@ export default class GeostatsControl extends M.Control {
 
     let bounds = this.serie.bounds
     let colors = this.serie.colors;
-    console.log(colors)
     
     this.mvt.applyStyle_(new M.style.Polygon({
       fill: {
