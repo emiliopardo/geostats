@@ -1,7 +1,7 @@
 <div id="div-contenedor" class="m-control m-geostats-container">
   <div class="m-geostats-plugin">
     <!-- TITLE -->
-    <div class="m-geostats-title">Indicadores Secciones Censales</div>
+    <div class="m-geostats-title">Mapas Estadísticos</div>
     <!-- BODY-->
     <div class="m-geostats-body">
       <div class="geostats-input-container">
@@ -9,7 +9,8 @@
           id="labelSelectCapa"
           class="geostats-input-label"
           for="SelectCapa"
-          ><i class="g-cartografia-mapa"></i> Capa</label>
+          ><i class="g-cartografia-mapa"></i> Capa</label
+        >
         <select class="geostats-select" name="SelectCapa" id="SelectCapa">
           <option value="" selected="selected">Seleccione una opción...</option>
           {{#each secciones}}
@@ -19,18 +20,78 @@
         <span class="geostats-info">* Seleccione una capa</span>
       </div>
       <div class="geostats-input-container">
-        <label 
-        id="labelSelectedFile"
-        class="geostats-input-label"
-        for="SelectedFile"
+        <label
+          id="labelSelectedFile"
+          class="geostats-input-label"
+          for="SelectedFile"
           ><i class="g-cartografia-lista"></i> Datos
         </label>
-        <input class="geostats-file-upload" type="file" accept=".csv" name="SelectedFile" id="SelectedFile" disabled/>
-        <span class="geostats-info">* Seleccione el fichero con la variable a representar (CSV)</span>
+        <input
+          class="geostats-file-upload"
+          type="file"
+          accept=".csv"
+          name="SelectedFile"
+          id="SelectedFile"
+          disabled
+        />
+        <li>
+        <input
+          class="geostats-checkbox"
+          type="checkbox"
+          name="csvHeader"
+          id="csvHeader"
+          disabled
+        />
+        <label
+          id="labelcsvHeader"
+          class="geostats-input-label-inline"
+          for="csvHeader"
+          >¿El CSV incluye Cabecera?</label
+        >
+      </li>
+        <span class="geostats-info"
+          >* Seleccione el fichero con la variable a representar (CSV)</span
+        >
+        <div id="parseResults">
+          <p
+            style="
+              text-align: center;
+              background-color: red;
+              color: black;
+              font-weight: bold;
+            "
+          >
+            Parse Results
+          </p>
+        </div>
+        <label
+          id="labelSelectMetodo"
+          class="geostats-input-label"
+          for="SelectMetodo"
+          ><i class="g-cartografia-herramienta"></i> Método de Representación
+        </label>
+        <select
+          class="geostats-select"
+          name="SelectMetodo"
+          id="SelectMetodo"
+          disabled="disabled"
+        >
+          <option value="" selected="selected">Seleccione una opción...</option>
+          <option value="uniqueValues">Valores únicos</option>
+          <option value="equalsIntervals">Intervalos iguales</option>
+          <option value="standarDesviation">Desviación estandar</option>
+          <option value="arithmeticProgression">Progresión aritmética</option>
+          <option value="geometricProgression">Progresión geométrica</option>
+          <option value="naturalBreaksJenks">Rupturas Naturales (Jenks)</option>
+        </select>
+        <span class="geostats-info"
+          >* Seleccione un método de representación</span
+        >
       </div>
       <div class="geostats-action-button-container">
         <button id="loadButton" class="geostats-button" title="Cargar" disabled>
-          <i class="g-cartografia-subir"></i> Cargar</button>
+          <i class="g-cartografia-subir"></i> Cargar
+        </button>
       </div>
     </div>
   </div>
