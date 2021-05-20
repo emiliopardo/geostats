@@ -32,11 +32,11 @@ export default class GeostatsControl extends M.Control {
     this.secciones_ = secciones;
     this.service_url = null;
     this.csv_file = null;
-    this.json = null;
     this.mvt = null;
     this.serie = null;
     this.uValues = null;
     this.colorValues = null;
+    this.elment = null;
   }
 
   /**
@@ -52,6 +52,7 @@ export default class GeostatsControl extends M.Control {
 
     return new Promise((success, fail) => {
       const html = M.template.compileSync(template, templateVars);
+      this.element = html;
       this.addEvents(html);
       success(html);
     });
@@ -67,15 +68,19 @@ export default class GeostatsControl extends M.Control {
    */
 
   addEvents(html) {
-    this.selector = html.querySelector("select#SelectCapa");
+    this.selectorCapa = html.querySelector("select#SelectCapa");
+    this.selectorMetodo = html.querySelector("select#SelectMetodo");
     this.file = html.querySelector("input#SelectedFile");
     this.load = html.querySelector("button#loadButton");
-
-    this.selector.addEventListener("change", (evt) =>
-      this.setServiceURL(evt, this.selector.value)
+    this.csvHeader = html.querySelector("input#csvHeader")
+    this.selectorCapa.addEventListener("change", (evt) =>
+      this.setServiceURL(evt, this.selectorCapa.value)
     );
     this.file.addEventListener("change", (evt) =>
       this.setCSVFile(evt, this.file.value)
+    );
+    this.selectorMetodo.addEventListener("change", (evt) =>
+      this.setMetodo(evt, this.selectorMetodo.value)
     );
     this.load.addEventListener("click", (evt) => this.loadLayer());
   }
@@ -138,10 +143,10 @@ export default class GeostatsControl extends M.Control {
         header: true,
         dynamicTyping: true,
         complete: (results) => {
-          this.renderDataset(results);
+          this.parseDataset(results);
         },
       });
-      this.load.disabled = false;
+      this.selectorMetodo.disabled = false;
     }
   }
 
@@ -171,7 +176,7 @@ export default class GeostatsControl extends M.Control {
       });
       this.map_.addLayers(this.mvt);
       this.mvt.applyStyle_(estilo2);
-      
+
       // this.getImpl()
       // .loadMVT("Capa MVT", url)
       // .then((result) => {
@@ -193,57 +198,114 @@ export default class GeostatsControl extends M.Control {
     }
 
     this.file.disabled = false;
+    this.csvHeader.disabled = false;
   }
 
-  loadLayer() {
-    this.activate();
-    this.colorValues = [];
-    for (let index = 0; index < this.uValues.length; index++) {
-      let randomColor = this.getRandomColor();
-      this.colorValues.push(randomColor);  
+  setMetodo(env, metodo) {
+    console.log(metodo);
+    this.load.disabled = false;
+  }
+
+  parseDataset(dataset) {
+    if (dataset.errors.length > 0) {
+      this.renderDatasetErrors(dataset.errors);
+    } else {
+      this.renderDatasetMetadata(dataset.meta);
     }
-    this.serie.setColors(this.colorValues);
-    
 
-    let bounds = this.serie.bounds
-    let colors = this.serie.colors;
-    
-    this.mvt.applyStyle_(new M.style.Polygon({
-      fill: {
-        color: function(feature,map) {
-          let feature_name =feature.getAttribute('municipio');
-          let index_number =bounds.indexOf(feature_name);
-          // Definimos una simbologia en funcion del valor de un atributo
-          return colors[index_number]
-        },
-        opacity: 0.9
-      },
-      stroke: {
-        color: '#000',
-        width: 0.5,
-        opacity: 0.9
-      }
-    }))
-  }
-
-  renderDataset(dataset) {
-    this.json = JSON.stringify(dataset, null, 2);
     let municipios = [];
-    
+
     for (var i = 0; i < dataset.data.length; i++) {
       var obj = dataset.data[i];
-        municipios.push(obj.municipio);
+      municipios.push(obj.municipio);
     }
-     this.serie = new geostats(municipios);
-     this.uValues = this.serie.getClassUniqueValues();
+    this.serie = new geostats(municipios);
+    this.uValues = this.serie.getClassUniqueValues();
+  }
+
+  renderDatasetMetadata(datasetMetadata) {
+    this.infoResults = this.element.querySelector("div#parseResults");
+    console.log(datasetMetadata);
+    let html =
+      "<p>delimiter: " +
+      datasetMetadata.delimiter +
+      " Campos: " +
+      datasetMetadata.fields +
+      " Salto de Linea: " +
+      datasetMetadata.linebreak +
+      "</p>";
+    this.infoResults.innerHTML = html;
+    M.dialog.success(html,'Archivo cargado con éxito');
+  }
+
+  renderDatasetErrors(datasetErrorsMessage) {
+    let html =
+      "<table class='table-container' width='100%' role='table' aria-label='Destinations'>\n" +
+      "<caption>Day Trip Tours</caption>\n" +
+      "<thead>\n" +
+      "<tr class='flex-table header' role='rowgroup'>\n" +
+      "<th class='flex-row first' role='columnheader'>line</th>\n" +
+      "<th class='flex-row' role='columnheader'>code</th>\n" +
+      "<th class='flex-row' role='columnheader'>message</th>\n" +
+      "</tr>\n" +
+      "</thead>\n" +
+      "<tbody>\n";
+    for (let index = 0; index < datasetErrorsMessage.length; index++) {
+      html +=
+        "<tr class='flex-table row' role='rowgroup'>\n" +
+        "<td class='flex-row first' role='cell'><span class='flag-icon flag-icon-gb'></span>" +
+        datasetErrorsMessage[index].row +
+        "</td>\n" +
+        "<td class='flex-row' role='cell'>" +
+        datasetErrorsMessage[index].code +
+        "</td>\n" +
+        "<td class='flex-row' role='cell'>" +
+        datasetErrorsMessage[index].message +
+        "</td>\n" +
+        "</tr>\n";
+    }
+    html += "</tbody>\n" + "</table>";
+    M.dialog.error(html, "Error al procesar el archivo");
   }
 
   getRandomColor() {
-    var letters = '0123456789ABCDEF';
-    var color = '#';
+    var letters = "0123456789ABCDEF";
+    var color = "#";
     for (var i = 0; i < 6; i++) {
       color += letters[Math.floor(Math.random() * 16)];
     }
     return color;
+  }
+
+  loadLayer() {
+    //this.activate();
+    this.colorValues = [];
+    for (let index = 0; index < this.uValues.length; index++) {
+      let randomColor = this.getRandomColor();
+      this.colorValues.push(randomColor);
+    }
+    this.serie.setColors(this.colorValues);
+
+    let bounds = this.serie.bounds;
+    let colors = this.serie.colors;
+
+    this.mvt.applyStyle_(
+      new M.style.Polygon({
+        fill: {
+          color: function (feature, map) {
+            let feature_name = feature.getAttribute("municipio");
+            let index_number = bounds.indexOf(feature_name);
+            // Definimos una simbologia en funcion del valor de un atributo
+            return colors[index_number];
+          },
+          opacity: 0.9,
+        },
+        stroke: {
+          color: "#000",
+          width: 0.5,
+          opacity: 0.9,
+        },
+      })
+    );
   }
 }
