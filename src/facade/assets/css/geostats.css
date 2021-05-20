@@ -180,10 +180,6 @@ caption {
   display: none;
 }
 
-/* div {
-  box-sizing: border-box;
-} */
-
 .table-container {
   margin: 1em auto;
   width: 100%;
@@ -217,10 +213,6 @@ th {
 
   border: 1px solid #d9534f;
 }
-
-/* .flex-row {
-  width: 25%;
-} */
 
 .flex-row,
 .flex-cell {
