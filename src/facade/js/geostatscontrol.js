@@ -7,6 +7,7 @@ import GeostatsImplControl from "impl/geostatscontrol";
 import template from "templates/geostats";
 import Papa from "papaparse";
 import geostats from "geostats";
+import chroma from "chroma-js"
 
 export default class GeostatsControl extends M.Control {
   /**
@@ -28,7 +29,6 @@ export default class GeostatsControl extends M.Control {
     // 2. implementation of this control
     const impl = new GeostatsImplControl();
     super(impl, "Geostats");
-
     this.secciones_ = secciones;
     this.service_url = null;
     this.csv_file = null;
@@ -267,21 +267,12 @@ export default class GeostatsControl extends M.Control {
     M.dialog.error(html, "Error al procesar el archivo");
   }
 
-  getRandomColor() {
-    var letters = "0123456789ABCDEF";
-    var color = "#";
-    for (var i = 0; i < 6; i++) {
-      color += letters[Math.floor(Math.random() * 16)];
-    }
-    return color;
-  }
-
+  
   loadLayer() {
     //this.activate();
     this.colorValues = [];
     for (let index = 0; index < this.uValues.length; index++) {
-      let randomColor = this.getRandomColor();
-      this.colorValues.push(randomColor);
+      this.colorValues.push(chroma.random().hex());
     }
     this.serie.setColors(this.colorValues);
 
