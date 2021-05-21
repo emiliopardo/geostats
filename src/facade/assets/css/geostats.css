@@ -81,25 +81,28 @@ label.geostats-input-label-inline {
   font-size: 0.9em;
 }
 
-input.geostats-input {
-  height: 25px;
-  width: 95%;
-  cursor: pointer;
+
+li.geostats-li{
   display: block;
   padding: 5px;
   margin-top: 5px;
-  background-color: #fff;
-  border: 1px solid #ccc;
+  margin-bottom: 5px;
 }
 
-.geostats-checkbox {
+
+.geostats-input-button,
+.geostats-input-button:enabled{
+  display: block;
+}
+
+.geostats-input-checkbox {
   margin-top: 5px;
   padding: 5px;
   vertical-align:middle;
 }
 
-.geostats-file-upload,
-.geostats-file-upload:enabled {
+.geostats-input-file,
+.geostats-input-file:enabled {
   height: 25px;
   width: 97%;
   cursor: pointer;
@@ -137,16 +140,17 @@ input.geostats-input {
   border: 1px solid #2c2c2c;
 }
 
-.geostats-checkbox:disabled,
-.geostats-file-upload,
+.geostats-input-checkbox:disabled,
+.geostats-input-file,
 .geostats-button:disabled,
-.geostats-select:disabled {
+.geostats-select:disabled,
+.geostats-input-button {
   cursor: not-allowed;
 }
 
 .geostats-select,
 .geostats-select:enabled {
-  height: 25px;
+  height: 30px;
   width: 100%;
   cursor: pointer;
   padding: 5px;
