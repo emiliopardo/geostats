@@ -32,11 +32,14 @@ export default class GeostatsControl extends M.Control {
     this.secciones_ = secciones;
     this.service_url = null;
     this.csv_file = null;
+    this.csv_header = false;
     this.mvt = null;
     this.serie = null;
     this.uValues = null;
     this.colorValues = null;
     this.elment = null;
+    this.linkField = null;
+    this.dataField = null;
   }
 
   /**
@@ -73,12 +76,14 @@ export default class GeostatsControl extends M.Control {
     this.file = html.querySelector("input#SelectedFile");
     this.csvLoadButton = html.querySelector("input#csvLoadButton");
     this.load = html.querySelector("button#loadButton");
-    this.csvHeader = html.querySelector("input#csvHeader");
     this.selectorCapa.addEventListener("change", (evt) =>
       this.setServiceURL(evt, this.selectorCapa.value)
     );
     this.file.addEventListener("change", (evt) =>
       this.preLoadCSVFile(evt, this.file.value)
+    );
+    this.csvLoadButton.addEventListener("click", (evt) =>
+      this.loadCSVFile(evt, this.file.value)
     );
     this.selectorMetodo.addEventListener("change", (evt) =>
       this.setMetodo(evt, this.selectorMetodo.value)
@@ -137,6 +142,7 @@ export default class GeostatsControl extends M.Control {
   // Add your own functions
 
   preLoadCSVFile(evt, file) {
+    console.log(evt);
     this.csv_file = file;
     if (this.csv_file) {
       let files = this.file.files;
@@ -145,12 +151,27 @@ export default class GeostatsControl extends M.Control {
         preview: 3,
         dynamicTyping: true,
         complete: (results) => {
-          //this.parseDataset(results);
           this.previewDataset(results);
         },
       });
       this.csvLoadButton.disabled = false;
-      //this.selectorMetodo.disabled = false;
+    }
+  }
+
+  loadCSVFile(evt, file) {
+    this.csv_file = file;
+    if (this.csv_file) {
+      let files = this.file.files;
+      Papa.parse(files[0], {
+        header: this.csv_header,
+        preview: 0,
+        dynamicTyping: true,
+        complete: (results) => {
+          this.parseDataset(results);
+        },
+      });
+
+      this.selectorMetodo.disabled = false;
     }
   }
 
@@ -202,7 +223,6 @@ export default class GeostatsControl extends M.Control {
     }
 
     this.file.disabled = false;
-    this.csvHeader.disabled = false;
   }
 
   setMetodo(env, metodo) {
@@ -211,41 +231,104 @@ export default class GeostatsControl extends M.Control {
   }
 
   previewDataset(dataset) {
-    if (dataset.errors.length > 0) {
-      this.renderDatasetErrors(dataset.errors);
-    } else {
-      let html =
-        "<table class='table-container' width='100%' role='table' aria-label='Destinations'>\n" +
-        "<tbody>\n";
-      for (let y = 0; y < dataset.data.length; y++) {
-        const element = dataset.data[y];
-        html +=
-          "<tr class='flex-table header' role='rowgroup'>\n" +
-          "<td class='errorMessage flex-row first' role='cell'><span class='flag-icon flag-icon-gb'></span>" +
-          (y + 1) +
-          "</td>\n";
-        for (let x = 0; x < element.length; x++) {
-          const value = element[x];
-          html +=
-            "<td class='errorMessage flex-row' role='cell'><span class='flag-icon flag-icon-gb'></span>" +
-            value +
-            "</td>\n";
-        }
-        html += "</tr>\n";
-      }
-      html += "</tbody>\n" + "</table>";
-      M.dialog.success(
-        html,
-        "Previsualización archivo " + this.file.files[0].name
-      );
+    const columns = dataset.data[0];
+    let firstRow = "";
+    let html =
+      "<div>\n" +
+      "<table class='table-container' width='100%' role='table' id='dataPreviewTable'>\n" +
+      "<tbody>\n";
+    for (let y = 0; y < dataset.data.length; y++) {
+      html +=
+        "<tr class='flex-table header' role='rowgroup'>\n" +
+        "<td class='errorMessage flex-row first' role='cell'>" +
+        (y + 1) +
+        "</td>\n" +
+        "<td class='errorMessage flex-row' role='cell'>\n" +
+        dataset.data[y] +
+        "</td>\n";
     }
+    html +=
+      "</tbody>\n" +
+      "</table>\n" +
+      "</div>\n" +
+      "<div>\n" +
+      "<li class='geostats-li'>\n" +
+      "<input class='geostats-input-checkbox' type='checkbox' name='csvHeader' id='csvHeader' />\n" +
+      "<label id='labelcsvHeader' class='geostats-input-label-inline' for='csvHeader'>El CSV incluye Cabecera</label>\n" +
+      "</li>\n" +
+      "</div>\n" +
+      "<div id='csvParameters'>\n" +
+      "<div id='divLinkColumn'>\n" +
+      "<label id='labelSelectLinkColumn' class='geostats-input-label-inline' for='SelectLinkColumn'>Seleccione el campo de enlace</label>\n" +
+      "<select class='geostats-select' name='SelectLinkColumn' id='SelectLinkColumn'>\n" +
+      this.setLinkColumn(columns, false) +
+      "</select>\n" +
+      "</div>\n" +
+      "<div id='divDataColumn'>\n" +
+      "<label id='labelSelectDataColumn' class='geostats-input-label-inline' for='SelectDataColumn'>Seleccione variable</label>\n" +
+      "<select class='geostats-select' name='SelectDataColumn' id='SelectDataColumn'>\n" +
+      this.setLinkColumn(columns, false) +
+      "</select>" +
+      "</div>\n" +
+      "</div>\n";
+    M.dialog.info(html, "Previsualización archivo " + this.file.files[0].name);
+
+    let csvHeaderValue = document.getElementById("csvHeader");
+    let selectorLinkColumn = document.getElementById("SelectLinkColumn");
+    let selectorDataColumn = document.getElementById("SelectDataColumn");
+
+    selectorLinkColumn.addEventListener("change", () => {
+      this.linkField = selectorLinkColumn.value;
+      console.log(this.linkField);
+    });
+    selectorDataColumn.addEventListener("change", () => {
+      this.dataField = selectorDataColumn.value;
+      console.log(this.dataField);
+    });
+    csvHeaderValue.addEventListener("click", () => {
+      let linkColumn = document.getElementById("SelectLinkColumn");
+      let dataColumn = document.getElementById("SelectDataColumn");
+      let table = document.getElementById("dataPreviewTable");
+
+      if (csvHeaderValue.checked) {
+        firstRow = table.rows[0];
+        firstRow.classList.toggle("bold");
+        this.csv_header = true;
+      } else {
+        firstRow.classList.toggle("bold");
+      }
+      linkColumn.innerHTML = this.setLinkColumn(
+        columns,
+        csvHeaderValue.checked
+      );
+      dataColumn.innerHTML = this.setLinkColumn(
+        columns,
+        csvHeaderValue.checked
+      );
+    });
+  }
+
+  setLinkColumn(columns, header) {
+    let html =
+      "<option value='' selected='selected'>Seleccione una opción...</option>\n";
+    for (let z = 0; z < columns.length; z++) {
+      if (header) {
+        const value = columns[z];
+        html += "<option value=" + value + ">" + value + "</option>\n";
+      } else {
+        html += "<option value=" + z + ">columna " + (z + 1) + "</option>\n";
+      }
+    }
+    return html;
   }
 
   parseDataset(dataset) {
+    console.log(dataset);
     if (dataset.errors.length > 0) {
       this.renderDatasetErrors(dataset.errors);
     } else {
       this.renderDatasetMetadata(dataset.meta);
+      //M.dialog.success("Archivo cargado con éxito");
     }
     let municipios = [];
 
@@ -273,7 +356,7 @@ export default class GeostatsControl extends M.Control {
 
   renderDatasetErrors(datasetErrorsMessage) {
     let html =
-      "<table class='table-container' width='100%' role='table' aria-label='Destinations'>\n" +
+      "<table class='table-container' width='100%' role='table'>\n" +
       "<thead>\n" +
       "<tr class='flex-table header' role='rowgroup'>\n" +
       "<th class='flex-row first' role='columnheader'>line</th>\n" +
@@ -285,7 +368,7 @@ export default class GeostatsControl extends M.Control {
     for (let index = 0; index < datasetErrorsMessage.length; index++) {
       html +=
         "<tr class='flex-table row' role='rowgroup'>\n" +
-        "<td class='errorMessage flex-row first' role='cell'><span class='flag-icon flag-icon-gb'></span>" +
+        "<td class='errorMessage flex-row first' role='cell'>" +
         datasetErrorsMessage[index].row +
         "</td>\n" +
         "<td class='errorMessage flex-row' role='cell'>" +
@@ -317,7 +400,6 @@ export default class GeostatsControl extends M.Control {
           color: function (feature, map) {
             let feature_name = feature.getAttribute("municipio");
             let index_number = bounds.indexOf(feature_name);
-            // Definimos una simbologia en funcion del valor de un atributo
             return colors[index_number];
           },
           opacity: 0.9,
