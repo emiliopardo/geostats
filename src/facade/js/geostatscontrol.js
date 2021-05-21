@@ -7,7 +7,7 @@ import GeostatsImplControl from "impl/geostatscontrol";
 import template from "templates/geostats";
 import Papa from "papaparse";
 import geostats from "geostats";
-import chroma from "chroma-js"
+import chroma from "chroma-js";
 
 export default class GeostatsControl extends M.Control {
   /**
@@ -71,13 +71,14 @@ export default class GeostatsControl extends M.Control {
     this.selectorCapa = html.querySelector("select#SelectCapa");
     this.selectorMetodo = html.querySelector("select#SelectMetodo");
     this.file = html.querySelector("input#SelectedFile");
+    this.csvLoadButton = html.querySelector("input#csvLoadButton");
     this.load = html.querySelector("button#loadButton");
-    this.csvHeader = html.querySelector("input#csvHeader")
+    this.csvHeader = html.querySelector("input#csvHeader");
     this.selectorCapa.addEventListener("change", (evt) =>
       this.setServiceURL(evt, this.selectorCapa.value)
     );
     this.file.addEventListener("change", (evt) =>
-      this.setCSVFile(evt, this.file.value)
+      this.preLoadCSVFile(evt, this.file.value)
     );
     this.selectorMetodo.addEventListener("change", (evt) =>
       this.setMetodo(evt, this.selectorMetodo.value)
@@ -135,18 +136,21 @@ export default class GeostatsControl extends M.Control {
 
   // Add your own functions
 
-  setCSVFile(evt, file) {
+  preLoadCSVFile(evt, file) {
     this.csv_file = file;
     if (this.csv_file) {
       let files = this.file.files;
       Papa.parse(files[0], {
-        header: true,
+        header: false,
+        preview: 3,
         dynamicTyping: true,
         complete: (results) => {
-          this.parseDataset(results);
+          //this.parseDataset(results);
+          this.previewDataset(results);
         },
       });
-      this.selectorMetodo.disabled = false;
+      this.csvLoadButton.disabled = false;
+      //this.selectorMetodo.disabled = false;
     }
   }
 
@@ -206,13 +210,43 @@ export default class GeostatsControl extends M.Control {
     this.load.disabled = false;
   }
 
+  previewDataset(dataset) {
+    if (dataset.errors.length > 0) {
+      this.renderDatasetErrors(dataset.errors);
+    } else {
+      let html =
+        "<table class='table-container' width='100%' role='table' aria-label='Destinations'>\n" +
+        "<tbody>\n";
+      for (let y = 0; y < dataset.data.length; y++) {
+        const element = dataset.data[y];
+        html +=
+          "<tr class='flex-table header' role='rowgroup'>\n" +
+          "<td class='errorMessage flex-row first' role='cell'><span class='flag-icon flag-icon-gb'></span>" +
+          (y + 1) +
+          "</td>\n";
+        for (let x = 0; x < element.length; x++) {
+          const value = element[x];
+          html +=
+            "<td class='errorMessage flex-row' role='cell'><span class='flag-icon flag-icon-gb'></span>" +
+            value +
+            "</td>\n";
+        }
+        html += "</tr>\n";
+      }
+      html += "</tbody>\n" + "</table>";
+      M.dialog.success(
+        html,
+        "Previsualización archivo " + this.file.files[0].name
+      );
+    }
+  }
+
   parseDataset(dataset) {
     if (dataset.errors.length > 0) {
       this.renderDatasetErrors(dataset.errors);
     } else {
       this.renderDatasetMetadata(dataset.meta);
     }
-
     let municipios = [];
 
     for (var i = 0; i < dataset.data.length; i++) {
@@ -234,13 +268,12 @@ export default class GeostatsControl extends M.Control {
       datasetMetadata.linebreak +
       "</p>";
     this.infoResults.innerHTML = html;
-    M.dialog.success(html,'Archivo cargado con éxito');
+    M.dialog.success(html, "Archivo cargado con éxito");
   }
 
   renderDatasetErrors(datasetErrorsMessage) {
     let html =
       "<table class='table-container' width='100%' role='table' aria-label='Destinations'>\n" +
-      "<caption>Day Trip Tours</caption>\n" +
       "<thead>\n" +
       "<tr class='flex-table header' role='rowgroup'>\n" +
       "<th class='flex-row first' role='columnheader'>line</th>\n" +
@@ -267,7 +300,6 @@ export default class GeostatsControl extends M.Control {
     M.dialog.error(html, "Error al procesar el archivo");
   }
 
-  
   loadLayer() {
     //this.activate();
     this.colorValues = [];

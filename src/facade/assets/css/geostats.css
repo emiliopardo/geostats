@@ -93,12 +93,15 @@ li.geostats-li{
 .geostats-input-button,
 .geostats-input-button:enabled{
   display: block;
+  cursor: pointer;
 }
 
-.geostats-input-checkbox {
+.geostats-input-checkbox,
+.geostats-input-checkbox:enabled {
   margin-top: 5px;
   padding: 5px;
   vertical-align:middle;
+  cursor: pointer;
 }
 
 .geostats-input-file,

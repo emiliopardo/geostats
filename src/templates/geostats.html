@@ -27,16 +27,19 @@
           ><i class="g-cartografia-lista"></i> Datos
         </label>
         <input
-          class="geostats-file-upload"
+          class="geostats-input-file"
           type="file"
           accept=".csv"
           name="SelectedFile"
           id="SelectedFile"
           disabled
         />
-        <li>
+        <span class="geostats-info"
+        >* Seleccione el fichero con la variable a representar (CSV)</span
+      >
+        <li class="geostats-li">
           <input
-            class="geostats-checkbox"
+            class="geostats-input-checkbox"
             type="checkbox"
             name="csvHeader"
             id="csvHeader"
@@ -49,18 +52,17 @@
             >El CSV incluye Cabecera</label
           >
         </li>
-        <span class="geostats-info"
-          >* Seleccione el fichero con la variable a representar (CSV)</span
-        >
-        <div id="parseResults">
-          <p
-            style="
-              text-align: center;
-              background-color: red;
-              color: black;
-              font-weight: bold;
-            "
-          >
+        <input
+          type="button"
+          class="geostats-input-button"
+          name="csvLoadButton"
+          id="csvLoadButton"
+          value="Cargar CSV"
+          disabled="disabled"
+        />
+        </div>
+        <div id="parseResults" class="geostats-input-container">
+          <p style="text-align: center; color: red; font-weight: bold">
             Parse Results
           </p>
         </div>
@@ -90,7 +92,7 @@
       </div>
       <div class="geostats-action-button-container">
         <button id="loadButton" class="geostats-button" title="Cargar" disabled>
-          <i class="g-cartografia-subir"></i> Cargar
+          <i class="g-cartografia-subir"></i> Representar
         </button>
       </div>
     </div>
