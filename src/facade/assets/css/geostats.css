@@ -78,7 +78,7 @@ label.geostats-input-label {
 label.geostats-input-label-inline {
   margin-top: 5px;
   padding: 5px;
-  font-size: 0.9em;
+  font-size: 0.8em;;
 }
 
 
@@ -94,6 +94,8 @@ li.geostats-li{
 .geostats-input-button:enabled{
   display: block;
   cursor: pointer;
+  margin-top: 5px;
+  margin-bottom: 5px;
 }
 
 .geostats-input-checkbox,
@@ -118,6 +120,24 @@ li.geostats-li{
   border-radius: 4px;
   color: #6c6c6c;
   font-family: Muli, "sans-serif";
+}
+
+.geostats-input-radio{
+  display: inline-block;
+}
+#csvParameters{
+  display:flex;
+}
+
+#SelectLinkColumn, #SelectDataColumn{
+  width:80%;
+  margin-top: 5px;
+  margin-bottom: 5px;
+  padding: 5px;
+}
+
+#divLinkColumn, #divDataColumn {
+  width: 50%;
 }
 
 .geostats-button,
@@ -149,6 +169,7 @@ li.geostats-li{
 .geostats-select:disabled,
 .geostats-input-button {
   cursor: not-allowed;
+  margin-bottom: 5px;
 }
 
 .geostats-select,
@@ -183,10 +204,6 @@ div.m-message {
   text-align: center;
 }
 
-caption {
-  display: none;
-}
-
 .table-container {
   margin: 1em auto;
   width: 100%;
@@ -195,22 +212,27 @@ caption {
   border-collapse: collapse;
 }
 
-.m-dialog.success div.m-title {
+.m-dialog.success .m-title {
   background-color: #00796b !important;
 }
 
-.m-dialog.success div.m-button > button,
-.m-dialog.success div.m-title {
+.m-dialog.info div.m-button > button, .m-dialog.info div.m-title{
   background-color: #00796b !important;
 }
 
-.flag-icon {
-  margin-right: 0.1em;
+.m-dialog.success  div.m-button > button,
+.m-dialog.success  div.m-title {
+  background-color: #00796b !important;
 }
+
 
 td.errorMessage {
   border: 1px solid #d9d9d9;
   padding: 0.5em;
+}
+
+.bold{
+  font-weight: bold;
 }
 
 th {
@@ -235,9 +257,9 @@ th {
   }
 
   th {
-    border-left: solid 1px #1565c0;
-    border-right: solid 1px #1565c0;
-    border-bottom: solid 1px #1565c0;
+    border-left: solid 1px #00796b;
+    border-right: solid 1px #00796b;
+    border-bottom: solid 1px #00796b;
   }
 
   td {
