@@ -201,32 +201,42 @@ export default class GeostatsControl extends M.Control {
       });
       this.map_.addLayers(this.mvt);
       this.mvt.applyStyle_(estilo2);
-
-      // this.getImpl()
-      // .loadMVT("Capa MVT", url)
-      // .then((result) => {
-      //   this.mvt = result;
-      //   let estilo = new ol.style.Style({
-      //     fill: new ol.style.Fill({
-      //       color: "rgba(124, 124, 124,0.9)",
-      //     }),
-      //     stroke: new ol.style.Stroke({
-      //       color: "rgba(255, 255, 255,0.9)",
-      //       width: 0.5,
-      //       lineCap: "round",
-      //     }),
-      //   });
-      //   let layerOL = this.mvt.getImpl().getOL3Layer();
-      //   layerOL.setStyle(estilo);
-      //   this.map_.addLayers(this.mvt);
-      // });
     }
 
     this.file.disabled = false;
   }
 
   setMetodo(env, metodo) {
-    console.log(metodo);
+    let nbClass = 5;
+    switch (metodo) {
+      case "quantile":
+        this.uValues=this.serie.getClassQuantile(nbClass);
+        break;
+      case "uniqueValues":
+        this.uValues=this.serie.getClassUniqueValues(nbClass);
+        break;
+      case "equalsIntervals":
+        this.uValues=this.serie.getClassEqInterval(nbClass);
+        break;
+      case "standarDesviation":
+        this.uValues=this.serie.getClassStdDeviation(nbClass);
+        break;
+      case "arithmeticProgression":
+        this.uValues=this.serie.getClassArithmeticProgression(nbClass);
+        break;
+      case "geometricProgression":
+        this.uValues=this.serie.getClassEqInterval(nbClass);
+        break;
+      case "naturalBreaksJenks":        
+        this.uValues=this.serie.getClassJenks(nbClass);
+        break;
+      default:
+        break;
+    }
+    //console.log(this.serie);
+    console.log(this.uValues);
+    //console.log(this.serie["bounds"]);
+    //console.log(this.serie["ranges"]);
     this.load.disabled = false;
   }
 
@@ -278,7 +288,7 @@ export default class GeostatsControl extends M.Control {
     let selectorDataColumn = document.getElementById("SelectDataColumn");
 
     selectorLinkColumn.addEventListener("change", () => {
-      this.linkField = selectorLinkColumn.value;
+      this.linkField = selectorLinkColumn.value.toString();
       let dataColumnOptions = document
         .getElementById("SelectDataColumn")
         .getElementsByTagName("option");
@@ -289,18 +299,17 @@ export default class GeostatsControl extends M.Control {
       }
     });
     selectorDataColumn.addEventListener("change", () => {
-      this.dataField = selectorDataColumn.value;
+      this.dataField = selectorDataColumn.value.toString();
       let linkColumnOptions = document
-      .getElementById("SelectLinkColumn")
-      .getElementsByTagName("option");
+        .getElementById("SelectLinkColumn")
+        .getElementsByTagName("option");
       for (var i = 0; i < linkColumnOptions.length; i++) {
         linkColumnOptions[i].value == this.dataField
           ? (linkColumnOptions[i].disabled = true)
           : (linkColumnOptions[i].disabled = false);
       }
-      console.log(this.dataField);
     });
-    csvHeaderValue.addEventListener("click", () => {
+    csvHeaderValue.addEventListener("change", () => {
       let linkColumn = document.getElementById("SelectLinkColumn");
       let dataColumn = document.getElementById("SelectDataColumn");
       let table = document.getElementById("dataPreviewTable");
@@ -338,35 +347,93 @@ export default class GeostatsControl extends M.Control {
   }
 
   parseDataset(dataset) {
-    console.log(dataset);
     if (dataset.errors.length > 0) {
       this.renderDatasetErrors(dataset.errors);
     } else {
-      this.renderDatasetMetadata(dataset.meta);
-      //M.dialog.success("Archivo cargado con éxito");
-    }
-    let municipios = [];
+      let dataValue = [];
+      let linkValue = [];
+      this.renderDatasetMetadata(dataset);
+      let y = 0;
+      if (this.csv_header) {
+        y = 1;
+      }
+      for (let i = y; i < dataset.data.length; i++) {
+        let obj = dataset.data[i];
+        dataValue.push(obj[this.dataField]);
+        linkValue.push(obj[this.linkField]);
+      }
 
-    for (var i = 0; i < dataset.data.length; i++) {
-      var obj = dataset.data[i];
-      municipios.push(obj.municipio);
+      this.serie = new geostats(dataValue);
+      //this.uValues = this.serie.getClassUniqueValues();
     }
-    this.serie = new geostats(municipios);
-    this.uValues = this.serie.getClassUniqueValues();
   }
 
-  renderDatasetMetadata(datasetMetadata) {
-    this.infoResults = this.element.querySelector("div#parseResults");
+  renderDatasetMetadata(dataset) {
+    let rowCount = dataset.data.length;
+    let delimiter = dataset.meta.delimiter;
+    let linebreak;
+    if (dataset.meta.linebreak === "\r") {
+      linebreak = "\\r";
+    }
+    if (dataset.meta.linebreak === "\n") {
+      linebreak = "\\n";
+    }
+    if (dataset.meta.linebreak === "\r\n") {
+      linebreak = "\\r\\n";
+    }
+
+    let linkColumn;
+    let dataColumn;
+    if (this.csv_header) {
+      linkColumn = this.linkField;
+      dataColumn = this.dataField;
+    }
+    if (!this.csv_header) {
+      linkColumn = "columna " + (parseInt(this.linkField) + 1);
+      dataColumn = "columna " + (parseInt(this.dataField) + 1);
+    }
+
     let html =
-      "<p>delimiter: " +
-      datasetMetadata.delimiter +
-      " Campos: " +
-      datasetMetadata.fields +
-      " Salto de Linea: " +
-      datasetMetadata.linebreak +
-      "</p>";
-    this.infoResults.innerHTML = html;
-    M.dialog.success(html, "Archivo cargado con éxito");
+      "<div>\n" +
+      "<table class='table-container' width='100%' role='table' id='dataPreviewTable'>\n" +
+      "<tbody>\n" +
+      "<tr class='flex-table header' role='rowgroup'>\n" +
+      "<td class='errorMessage flex-row first bold' role='cell'>Registros</td>" +
+      "<td class='errorMessage flex-row' role='cell'>" +
+      rowCount +
+      "</td>\n" +
+      "</tr>\n" +
+      "<tr class='flex-table header' role='rowgroup'>\n" +
+      "<td class='errorMessage flex-row first bold' role='cell'>Delimitador</td>" +
+      "<td class='errorMessage flex-row' role='cell'>" +
+      delimiter +
+      "</td>\n" +
+      "</tr>\n" +
+      "<tr class='flex-table header' role='rowgroup'>\n" +
+      "<td class='errorMessage flex-row first bold' role='cell'>Salto de linea</td>" +
+      "<td class='errorMessage flex-row' role='cell'>" +
+      linebreak +
+      "</td>\n" +
+      "</tr>\n" +
+      "<tr class='flex-table header' role='rowgroup'>\n" +
+      "<td class='errorMessage flex-row first bold' role='cell'>Campo de enlace</td>\n" +
+      "<td class='errorMessage flex-row' role='cell'>\n" +
+      linkColumn +
+      "</td>\n" +
+      "</tr>\n" +
+      "<tr class='flex-table header' role='rowgroup'>\n" +
+      "<td class='errorMessage flex-row first bold' role='cell'>Campo de datos</td>\n" +
+      "<td class='errorMessage flex-row' role='cell'>\n" +
+      dataColumn +
+      "</td>\n" +
+      "</tr>\n" +
+      "</tbody>\n" +
+      "</table>\n" +
+      "</div>\n";
+    M.dialog.success(
+      html,
+      "Archivo " + this.file.files[0].name + " cargado con éxito"
+    );
   }
 
   renderDatasetErrors(datasetErrorsMessage) {
@@ -395,7 +462,10 @@ export default class GeostatsControl extends M.Control {
         "</tr>\n";
     }
     html += "</tbody>\n" + "</table>";
-    M.dialog.error(html, "Error al procesar el archivo");
+    M.dialog.error(
+      html,
+      "Error al procesar el archivo " + this.file.files[0].name
+    );
   }
 
   loadLayer() {
