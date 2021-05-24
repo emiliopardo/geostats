@@ -38,6 +38,7 @@ export default class GeostatsControl extends M.Control {
     this.uValues = null;
     this.colorValues = null;
     this.elment = null;
+    this.csvFirstRow = null;
     this.linkField = null;
     this.dataField = null;
   }
@@ -142,7 +143,6 @@ export default class GeostatsControl extends M.Control {
   // Add your own functions
 
   preLoadCSVFile(evt, file) {
-    console.log(evt);
     this.csv_file = file;
     if (this.csv_file) {
       let files = this.file.files;
@@ -231,7 +231,7 @@ export default class GeostatsControl extends M.Control {
   }
 
   previewDataset(dataset) {
-    const columns = dataset.data[0];
+    this.csvFirstRow = dataset.data[0];
     let firstRow = "";
     let html =
       "<div>\n" +
@@ -261,13 +261,13 @@ export default class GeostatsControl extends M.Control {
       "<div id='divLinkColumn'>\n" +
       "<label id='labelSelectLinkColumn' class='geostats-input-label-inline' for='SelectLinkColumn'>Seleccione el campo de enlace</label>\n" +
       "<select class='geostats-select' name='SelectLinkColumn' id='SelectLinkColumn'>\n" +
-      this.setLinkColumn(columns, false) +
+      this.setLinkColumn(this.csvFirstRow, false) +
       "</select>\n" +
       "</div>\n" +
       "<div id='divDataColumn'>\n" +
       "<label id='labelSelectDataColumn' class='geostats-input-label-inline' for='SelectDataColumn'>Seleccione variable</label>\n" +
       "<select class='geostats-select' name='SelectDataColumn' id='SelectDataColumn'>\n" +
-      this.setLinkColumn(columns, false) +
+      this.setLinkColumn(this.csvFirstRow, false) +
       "</select>" +
       "</div>\n" +
       "</div>\n";
@@ -279,10 +279,25 @@ export default class GeostatsControl extends M.Control {
 
     selectorLinkColumn.addEventListener("change", () => {
       this.linkField = selectorLinkColumn.value;
-      console.log(this.linkField);
+      let dataColumnOptions = document
+        .getElementById("SelectDataColumn")
+        .getElementsByTagName("option");
+      for (var i = 0; i < dataColumnOptions.length; i++) {
+        dataColumnOptions[i].value == this.linkField
+          ? (dataColumnOptions[i].disabled = true)
+          : (dataColumnOptions[i].disabled = false);
+      }
     });
     selectorDataColumn.addEventListener("change", () => {
       this.dataField = selectorDataColumn.value;
+      let linkColumnOptions = document
+      .getElementById("SelectLinkColumn")
+      .getElementsByTagName("option");
+      for (var i = 0; i < linkColumnOptions.length; i++) {
+        linkColumnOptions[i].value == this.dataField
+          ? (linkColumnOptions[i].disabled = true)
+          : (linkColumnOptions[i].disabled = false);
+      }
       console.log(this.dataField);
     });
     csvHeaderValue.addEventListener("click", () => {
@@ -298,11 +313,11 @@ export default class GeostatsControl extends M.Control {
         firstRow.classList.toggle("bold");
       }
       linkColumn.innerHTML = this.setLinkColumn(
-        columns,
+        this.csvFirstRow,
         csvHeaderValue.checked
       );
       dataColumn.innerHTML = this.setLinkColumn(
-        columns,
+        this.csvFirstRow,
         csvHeaderValue.checked
       );
     });
