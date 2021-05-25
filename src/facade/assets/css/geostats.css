@@ -66,7 +66,7 @@ div.m-geostats-title {
 div.geostats-input-container {
   display: block;
   padding: 5px;
-  border-bottom: 1px dashed  #ccc;
+  border-bottom: 1px dashed #ccc;
 }
 
 label.geostats-input-label {
@@ -75,18 +75,39 @@ label.geostats-input-label {
   padding: 5px;
 }
 
-input.geostats-input {
-  height: 25px;
-  width: 95%;
-  cursor: pointer;
+label.geostats-input-label-inline {
+  margin-top: 5px;
+  padding: 5px;
+  font-size: 0.8em;;
+}
+
+
+li.geostats-li{
   display: block;
   padding: 5px;
   margin-top: 5px;
-  background-color: #fff;
-  border: 1px solid #ccc;
+  margin-bottom: 5px;
 }
 
-.geostats-file-upload,.geostats-file-upload:enabled {
+
+.geostats-input-button,
+.geostats-input-button:enabled{
+  display: block;
+  cursor: pointer;
+  margin-top: 5px;
+  margin-bottom: 5px;
+}
+
+.geostats-input-checkbox,
+.geostats-input-checkbox:enabled {
+  margin-top: 5px;
+  padding: 5px;
+  vertical-align:middle;
+  cursor: pointer;
+}
+
+.geostats-input-file,
+.geostats-input-file:enabled {
   height: 25px;
   width: 97%;
   cursor: pointer;
@@ -101,7 +122,26 @@ input.geostats-input {
   font-family: Muli, "sans-serif";
 }
 
-.geostats-button,.geostats-button:enabled {
+.geostats-input-radio{
+  display: inline-block;
+}
+#csvParameters{
+  display:flex;
+}
+
+#SelectLinkColumn, #SelectDataColumn{
+  width:80%;
+  margin-top: 5px;
+  margin-bottom: 5px;
+  padding: 5px;
+}
+
+#divLinkColumn, #divDataColumn {
+  width: 50%;
+}
+
+.geostats-button,
+.geostats-button:enabled {
   width: 39%;
   margin: 5px 25% 5px;
   padding: 5px;
@@ -118,17 +158,23 @@ input.geostats-input {
   color: #404040;
 }
 
-.geostats-button:hover:enabled{
-  color:black;
+.geostats-button:hover:enabled {
+  color: black;
   border: 1px solid #2c2c2c;
 }
 
-.geostats-file-upload,.geostats-button:disabled,.geostats-select:disabled{
-  cursor:not-allowed;
+.geostats-input-checkbox:disabled,
+.geostats-input-file,
+.geostats-button:disabled,
+.geostats-select:disabled,
+.geostats-input-button {
+  cursor: not-allowed;
+  margin-bottom: 5px;
 }
 
-.geostats-select, .geostats-select:enabled {
-  height: 25px;
+.geostats-select,
+.geostats-select:enabled {
+  height: 30px;
   width: 100%;
   cursor: pointer;
   padding: 5px;
@@ -154,17 +200,75 @@ span.geostats-info {
   font-size: 0.8em;
 }
 
-/** Estilos propios*/
-.info {
-  position: absolute;
-  width: 60%;
-  padding: 5px;
-  top: 10px;
-  left: 20%;
-  background: rgba(245, 245, 245, 0.8);
-  font-size: large;
-  border-radius: 5px;
-  border-style: dashed;
-  border-width: 2px;
+div.m-message {
   text-align: center;
+}
+
+.table-container {
+  margin: 1em auto;
+  width: 100%;
+  max-width: 600px;
+  font-size: 0.8rem;
+  border-collapse: collapse;
+}
+
+.m-dialog.success .m-title {
+  background-color: #00796b !important;
+}
+
+.m-dialog.info div.m-button > button, .m-dialog.info div.m-title{
+  background-color: #00796b !important;
+}
+
+.m-dialog.success  div.m-button > button,
+.m-dialog.success  div.m-title {
+  background-color: #00796b !important;
+}
+
+
+td.errorMessage {
+  border: 1px solid #d9d9d9;
+  padding: 0.5em;
+}
+
+.bold{
+  font-weight: bold;
+}
+
+th {
+  background: #d9534f;
+  color: white;
+  padding: 0.5em;
+
+  border: 1px solid #d9534f;
+}
+
+.flex-row,
+.flex-cell {
+  text-align: center;
+}
+
+@media only screen and (max-width: 767px) {
+  th,
+  td {
+    width: auto;
+    display: block;
+    border: 0;
+  }
+
+  th {
+    border-left: solid 1px #00796b;
+    border-right: solid 1px #00796b;
+    border-bottom: solid 1px #00796b;
+  }
+
+  td {
+    border-left: solid 1px #d9d9d9;
+    border-right: solid 1px #d9d9d9;
+    border-bottom: solid 1px #d9d9d9;
+  }
+
+  .flex-row {
+    width: 100%;
+  }
 }

@@ -1,3 +1,5 @@
+/* eslint-disable no-console */
+
 /**
  * @module M/impl/control/GeostatsControl
  */
@@ -12,40 +14,30 @@ export default class GeostatsControl extends M.impl.Control {
    * @api stable
    */
   addTo(map, html) {
-    // obtengo la interacción por defecto del dblclick para manejarla
-    const olMap = map.getMapImpl();
-    olMap.getInteractions().forEach((interaction) => {
-      if (interaction instanceof ol.interaction.DoubleClickZoom) {
-        this.dblClickInteraction_ = interaction;
-      }
-    });
-
+    this.facadeMap = map;
     // super addTo - don't delete
     super.addTo(map, html);
   }
 
-  // Add your own functions
-  activateClick(map) {
-    // desactivo el zoom al dobleclick
-    this.dblClickInteraction_.setActive(false);
-
-    // añado un listener al evento dblclick
-    const olMap = map.getMapImpl();
-    olMap.on('dblclick', (evt) => {
-      // disparo un custom event con las coordenadas del dobleclick
-      const customEvt = new CustomEvent('mapclicked', {
-        detail: evt.coordinate,
-        bubbles: true,
-      });
-      map.getContainer().dispatchEvent(customEvt);
-    });
+  activate() {
+    M.dialog.info("Se enlaza el CSV con el MVT y se representa");
   }
 
-  deactivateClick(map) {
-    // activo el zoom al dobleclick
-    this.dblClickInteraction_.setActive(true);
+  // Ocurre al desactivar
+  deactivate() {
+    M.dialog.info("Bye World!");
+  }
 
-    // elimino el listener del evento
-    map.getMapImpl().removeEventListener('dblclick');
+  loadMVT(layerName, url_service) {
+    return new Promise((resolve) => {
+      const layer = new M.layer.MVT({
+        url: url_service,
+        name: layerName,
+        projection: "EPSG:3857",
+      });
+       
+      this.facadeMap.addLayers(layer);
+      resolve(layer);
+    });
   }
 }
