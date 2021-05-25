@@ -12,6 +12,10 @@ div.m-panel.m-panzoom.opened.no-collapsible {
   position: fixed;
 }
 
+.geostats-font-small{
+  font-size: 0.8em !important;
+}
+
 div.m-geostats-plugin {
   -webkit-transition: max-width 0.5s ease 0s, opacity 0.44s ease 0s;
   transition: max-width 0.5s ease 0s, opacity 0.44s ease 0s;

@@ -77,6 +77,7 @@ export default class GeostatsControl extends M.Control {
     this.file = html.querySelector("input#SelectedFile");
     this.csvLoadButton = html.querySelector("input#csvLoadButton");
     this.load = html.querySelector("button#loadButton");
+    this.parseResults = html.querySelector("div#parseResults");
     this.selectorCapa.addEventListener("change", (evt) =>
       this.setServiceURL(evt, this.selectorCapa.value)
     );
@@ -170,7 +171,6 @@ export default class GeostatsControl extends M.Control {
           this.parseDataset(results);
         },
       });
-
       this.selectorMetodo.disabled = false;
     }
   }
@@ -208,35 +208,37 @@ export default class GeostatsControl extends M.Control {
 
   setMetodo(env, metodo) {
     let nbClass = 5;
+    this.renderDatasetStats(metodo);
     switch (metodo) {
       case "quantile":
-        this.uValues=this.serie.getClassQuantile(nbClass);
+        this.uValues = this.serie.getClassQuantile(nbClass);
         break;
       case "uniqueValues":
-        this.uValues=this.serie.getClassUniqueValues(nbClass);
+        this.uValues = this.serie.getClassUniqueValues(nbClass);
         break;
       case "equalsIntervals":
-        this.uValues=this.serie.getClassEqInterval(nbClass);
+        this.uValues = this.serie.getClassEqInterval(nbClass);
         break;
       case "standarDesviation":
-        this.uValues=this.serie.getClassStdDeviation(nbClass);
+        this.uValues = this.serie.getClassStdDeviation(nbClass);
         break;
       case "arithmeticProgression":
-        this.uValues=this.serie.getClassArithmeticProgression(nbClass);
+        this.uValues = this.serie.getClassArithmeticProgression(nbClass);
         break;
       case "geometricProgression":
-        this.uValues=this.serie.getClassEqInterval(nbClass);
+        this.uValues = this.serie.getClassEqInterval(nbClass);
         break;
-      case "naturalBreaksJenks":        
-        this.uValues=this.serie.getClassJenks(nbClass);
+      case "naturalBreaksJenks":
+        this.uValues = this.serie.getClassJenks(nbClass);
         break;
       default:
         break;
     }
     //console.log(this.serie);
-    console.log(this.uValues);
+    //console.log(this.uValues);
     //console.log(this.serie["bounds"]);
     //console.log(this.serie["ranges"]);
+    //console.log(this.serie.info());
     this.load.disabled = false;
   }
 
@@ -364,8 +366,68 @@ export default class GeostatsControl extends M.Control {
       }
 
       this.serie = new geostats(dataValue);
-      //this.uValues = this.serie.getClassUniqueValues();
+      this.renderDataSetInfo();
+
     }
+  }
+
+  renderDatasetStats(method) {
+    if (method == "uniqueValues") {
+      console.log("valores únicos");
+    } else {
+      console.log("otro");
+    }
+  }
+
+  renderDataSetInfo() {
+    let html = "<table class='table-container geostats-font-small' width='100%' role='table' id='dataPreviewTable'>\n" +
+      "<tbody>\n" +
+      "<tr class='flex-table header' role='rowgroup'>\n" +
+      "<td class='errorMessage flex-row first bold' role='cell'>Valor mínimo</td>" +
+      "<td class='errorMessage flex-row' role='cell'>" +
+      this.serie.min() +
+      "</td>\n" +
+      "</tr>\n" +
+      "<tr class='flex-table header' role='rowgroup'>\n" +
+      "<td class='errorMessage flex-row first bold' role='cell'>Valor máximo</td>" +
+      "<td class='errorMessage flex-row' role='cell'>" +
+      this.serie.max() +
+      "</td>\n" +
+      "</tr>\n" +
+      "<tr class='flex-table header' role='rowgroup'>\n" +
+      "<td class='errorMessage flex-row first bold' role='cell'>Media</td>" +
+      "<td class='errorMessage flex-row' role='cell'>" +
+      this.serie.mean() +
+      "</td>\n" +
+      "</tr>\n" +
+      "<tr class='flex-table header' role='rowgroup'>\n" +
+      "<td class='errorMessage flex-row first bold' role='cell'>Mediana</td>\n" +
+      "<td class='errorMessage flex-row' role='cell'>\n" +
+      this.serie.median() +
+      "</td>\n" +
+      "</tr>\n" +
+      "<tr class='flex-table header' role='rowgroup'>\n" +
+      "<td class='errorMessage flex-row first bold' role='cell'>Variancia</td>\n" +
+      "<td class='errorMessage flex-row' role='cell'>\n" +
+      this.serie.variance() +
+      "</td>\n" +
+      "</tr>\n" +
+      "<tr class='flex-table header' role='rowgroup'>\n" +
+      "<td class='errorMessage flex-row first bold' role='cell'>Coeficiente de variación</td>\n" +
+      "<td class='errorMessage flex-row' role='cell'>\n" +
+      this.serie.cov() +
+      "</td>\n" +
+      "</tr>\n" +
+      "<tr class='flex-table header' role='rowgroup'>\n" +
+      "<td class='errorMessage flex-row first bold' role='cell'>Desviación estandar</td>\n" +
+      "<td class='errorMessage flex-row' role='cell'>\n" +
+      this.serie.stddev() +
+      "</td>\n" +
+      "</tr>\n" +
+      "</tbody>\n" +
+      "</table>\n";
+    this.parseResults.innerHTML = html;
+    console.log(this.serie.info());
   }
 
   renderDatasetMetadata(dataset) {
@@ -385,6 +447,7 @@ export default class GeostatsControl extends M.Control {
     let linkColumn;
     let dataColumn;
     if (this.csv_header) {
+      rowCount = dataset.data.length - 1;
       linkColumn = this.linkField;
       dataColumn = this.dataField;
     }
