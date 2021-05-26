@@ -78,19 +78,20 @@ export default class GeostatsControl extends M.Control {
     this.csvLoadButton = html.querySelector("input#csvLoadButton");
     this.load = html.querySelector("button#loadButton");
     this.parseResults = html.querySelector("div#parseResults");
-    this.selectorCapa.addEventListener("change", (evt) =>
-      this.setServiceURL(evt, this.selectorCapa.value)
+    this.legend = html.querySelector("div#legend");
+    this.selectorCapa.addEventListener("change", () =>
+      this.setServiceURL(this.selectorCapa.value)
     );
-    this.file.addEventListener("change", (evt) =>
-      this.preLoadCSVFile(evt, this.file.value)
+    this.file.addEventListener("change", () =>
+      this.preLoadCSVFile(this.file.value)
     );
-    this.csvLoadButton.addEventListener("click", (evt) =>
-      this.loadCSVFile(evt, this.file.value)
+    this.csvLoadButton.addEventListener("click", () =>
+      this.loadCSVFile(this.file.value)
     );
-    this.selectorMetodo.addEventListener("change", (evt) =>
-      this.setMetodo(evt, this.selectorMetodo.value)
+    this.selectorMetodo.addEventListener("change", () =>
+      this.setMetodo(this.selectorMetodo.value)
     );
-    this.load.addEventListener("click", (evt) => this.loadLayer());
+    this.load.addEventListener("click", () => this.loadLayer());
   }
 
   /**
@@ -143,7 +144,7 @@ export default class GeostatsControl extends M.Control {
 
   // Add your own functions
 
-  preLoadCSVFile(evt, file) {
+  preLoadCSVFile(file) {
     this.csv_file = file;
     if (this.csv_file) {
       let files = this.file.files;
@@ -159,7 +160,7 @@ export default class GeostatsControl extends M.Control {
     }
   }
 
-  loadCSVFile(evt, file) {
+  loadCSVFile(file) {
     this.csv_file = file;
     if (this.csv_file) {
       let files = this.file.files;
@@ -175,7 +176,7 @@ export default class GeostatsControl extends M.Control {
     }
   }
 
-  setServiceURL(evt, url) {
+  setServiceURL(url) {
     this.service_url = url;
 
     const estilo2 = new M.style.Polygon({
@@ -206,15 +207,21 @@ export default class GeostatsControl extends M.Control {
     this.file.disabled = false;
   }
 
-  setMetodo(env, metodo) {
+  setMetodo(metodo) {
     let nbClass = 5;
-    this.renderDatasetStats(metodo);
+    let colors = chroma
+      .scale("YlGnBu")
+      .domain([this.serie.min(), this.serie.max()], nbClass)
+      .colors();
     switch (metodo) {
       case "quantile":
         this.uValues = this.serie.getClassQuantile(nbClass);
         break;
       case "uniqueValues":
         this.uValues = this.serie.getClassUniqueValues(nbClass);
+        for (let index = 0; index < this.uValues.length; index++) {
+          colors.push(chroma.random().hex());
+        }
         break;
       case "equalsIntervals":
         this.uValues = this.serie.getClassEqInterval(nbClass);
@@ -234,11 +241,8 @@ export default class GeostatsControl extends M.Control {
       default:
         break;
     }
-    //console.log(this.serie);
-    //console.log(this.uValues);
-    //console.log(this.serie["bounds"]);
-    //console.log(this.serie["ranges"]);
-    //console.log(this.serie.info());
+    this.serie.setColors(colors);
+    this.legend.innerHTML = this.serie.getHtmlLegend(colors, "Leyenda", 0);
     this.load.disabled = false;
   }
 
@@ -247,15 +251,15 @@ export default class GeostatsControl extends M.Control {
     let firstRow = "";
     let html =
       "<div>\n" +
-      "<table class='table-container' width='100%' role='table' id='dataPreviewTable'>\n" +
+      "<table class='table-container geostats-font-small' width='100%' role='table' id='dataPreviewTable'>\n" +
       "<tbody>\n";
     for (let y = 0; y < dataset.data.length; y++) {
       html +=
         "<tr class='flex-table header' role='rowgroup'>\n" +
-        "<td class='errorMessage flex-row first' role='cell'>" +
+        "<td class='geostats-td flex-row first' role='cell'>" +
         (y + 1) +
         "</td>\n" +
-        "<td class='errorMessage flex-row' role='cell'>\n" +
+        "<td class='geostats-td flex-row' role='cell'>\n" +
         dataset.data[y] +
         "</td>\n";
     }
@@ -352,8 +356,8 @@ export default class GeostatsControl extends M.Control {
     if (dataset.errors.length > 0) {
       this.renderDatasetErrors(dataset.errors);
     } else {
-      let dataValue = [];
-      let linkValue = [];
+      this.dataValue = [];
+      this.linkValue = [];
       this.renderDatasetMetadata(dataset);
       let y = 0;
       if (this.csv_header) {
@@ -361,73 +365,64 @@ export default class GeostatsControl extends M.Control {
       }
       for (let i = y; i < dataset.data.length; i++) {
         let obj = dataset.data[i];
-        dataValue.push(obj[this.dataField]);
-        linkValue.push(obj[this.linkField]);
+        this.dataValue.push(obj[this.dataField]);
+        this.linkValue.push(obj[this.linkField]);
       }
 
-      this.serie = new geostats(dataValue);
+      this.serie = new geostats(this.dataValue);
       this.renderDataSetInfo();
-
-    }
-  }
-
-  renderDatasetStats(method) {
-    if (method == "uniqueValues") {
-      console.log("valores únicos");
-    } else {
-      console.log("otro");
     }
   }
 
   renderDataSetInfo() {
-    let html = "<table class='table-container geostats-font-small' width='100%' role='table' id='dataPreviewTable'>\n" +
+    let html =
+      "<table class='table-container geostats-font-small' width='100%' role='table' id='dataPreviewTable'>\n" +
       "<tbody>\n" +
       "<tr class='flex-table header' role='rowgroup'>\n" +
-      "<td class='errorMessage flex-row first bold' role='cell'>Valor mínimo</td>" +
-      "<td class='errorMessage flex-row' role='cell'>" +
+      "<td class='geostats-td flex-row first bold' role='cell'>Valor mínimo</td>" +
+      "<td class='geostats-td flex-row' role='cell'>" +
       this.serie.min() +
       "</td>\n" +
       "</tr>\n" +
       "<tr class='flex-table header' role='rowgroup'>\n" +
-      "<td class='errorMessage flex-row first bold' role='cell'>Valor máximo</td>" +
-      "<td class='errorMessage flex-row' role='cell'>" +
+      "<td class='geostats-td flex-row first bold' role='cell'>Valor máximo</td>" +
+      "<td class='geostats-td flex-row' role='cell'>" +
       this.serie.max() +
       "</td>\n" +
       "</tr>\n" +
       "<tr class='flex-table header' role='rowgroup'>\n" +
-      "<td class='errorMessage flex-row first bold' role='cell'>Media</td>" +
-      "<td class='errorMessage flex-row' role='cell'>" +
+      "<td class='geostats-td flex-row first bold' role='cell'>Media</td>" +
+      "<td class='geostats-td flex-row' role='cell'>" +
       this.serie.mean() +
       "</td>\n" +
       "</tr>\n" +
       "<tr class='flex-table header' role='rowgroup'>\n" +
-      "<td class='errorMessage flex-row first bold' role='cell'>Mediana</td>\n" +
-      "<td class='errorMessage flex-row' role='cell'>\n" +
+      "<td class='geostats-td flex-row first bold' role='cell'>Mediana</td>\n" +
+      "<td class='geostats-td flex-row' role='cell'>\n" +
       this.serie.median() +
       "</td>\n" +
       "</tr>\n" +
       "<tr class='flex-table header' role='rowgroup'>\n" +
-      "<td class='errorMessage flex-row first bold' role='cell'>Variancia</td>\n" +
-      "<td class='errorMessage flex-row' role='cell'>\n" +
+      "<td class='geostats-td flex-row first bold' role='cell'>Variancia</td>\n" +
+      "<td class='geostats-td flex-row' role='cell'>\n" +
       this.serie.variance() +
       "</td>\n" +
       "</tr>\n" +
       "<tr class='flex-table header' role='rowgroup'>\n" +
-      "<td class='errorMessage flex-row first bold' role='cell'>Coeficiente de variación</td>\n" +
-      "<td class='errorMessage flex-row' role='cell'>\n" +
+      "<td class='geostats-td flex-row first bold' role='cell'>Coeficiente de variación</td>\n" +
+      "<td class='geostats-td flex-row' role='cell'>\n" +
       this.serie.cov() +
       "</td>\n" +
       "</tr>\n" +
       "<tr class='flex-table header' role='rowgroup'>\n" +
-      "<td class='errorMessage flex-row first bold' role='cell'>Desviación estandar</td>\n" +
-      "<td class='errorMessage flex-row' role='cell'>\n" +
+      "<td class='geostats-td flex-row first bold' role='cell'>Desviación estandar</td>\n" +
+      "<td class='geostats-td flex-row' role='cell'>\n" +
       this.serie.stddev() +
       "</td>\n" +
       "</tr>\n" +
       "</tbody>\n" +
       "</table>\n";
     this.parseResults.innerHTML = html;
-    console.log(this.serie.info());
   }
 
   renderDatasetMetadata(dataset) {
@@ -458,35 +453,35 @@ export default class GeostatsControl extends M.Control {
 
     let html =
       "<div>\n" +
-      "<table class='table-container' width='100%' role='table' id='dataPreviewTable'>\n" +
+      "<table class='table-container geostats-font-small' width='100%' role='table' id='dataPreviewTable'>\n" +
       "<tbody>\n" +
       "<tr class='flex-table header' role='rowgroup'>\n" +
-      "<td class='errorMessage flex-row first bold' role='cell'>Registros</td>" +
-      "<td class='errorMessage flex-row' role='cell'>" +
+      "<td class='geostats-td flex-row first bold' role='cell'>Registros</td>" +
+      "<td class='geostats-td flex-row' role='cell'>" +
       rowCount +
       "</td>\n" +
       "</tr>\n" +
       "<tr class='flex-table header' role='rowgroup'>\n" +
-      "<td class='errorMessage flex-row first bold' role='cell'>Delimitador</td>" +
-      "<td class='errorMessage flex-row' role='cell'>" +
+      "<td class='geostats-td flex-row first bold' role='cell'>Delimitador</td>" +
+      "<td class='geostats-td flex-row' role='cell'>" +
       delimiter +
       "</td>\n" +
       "</tr>\n" +
       "<tr class='flex-table header' role='rowgroup'>\n" +
-      "<td class='errorMessage flex-row first bold' role='cell'>Salto de linea</td>" +
-      "<td class='errorMessage flex-row' role='cell'>" +
+      "<td class='geostats-td flex-row first bold' role='cell'>Salto de linea</td>" +
+      "<td class='geostats-td flex-row' role='cell'>" +
       linebreak +
       "</td>\n" +
       "</tr>\n" +
       "<tr class='flex-table header' role='rowgroup'>\n" +
-      "<td class='errorMessage flex-row first bold' role='cell'>Campo de enlace</td>\n" +
-      "<td class='errorMessage flex-row' role='cell'>\n" +
+      "<td class='geostats-td flex-row first bold' role='cell'>Campo de enlace</td>\n" +
+      "<td class='geostats-td flex-row' role='cell'>\n" +
       linkColumn +
       "</td>\n" +
       "</tr>\n" +
       "<tr class='flex-table header' role='rowgroup'>\n" +
-      "<td class='errorMessage flex-row first bold' role='cell'>Campo de datos</td>\n" +
-      "<td class='errorMessage flex-row' role='cell'>\n" +
+      "<td class='geostats-td flex-row first bold' role='cell'>Campo de datos</td>\n" +
+      "<td class='geostats-td flex-row' role='cell'>\n" +
       dataColumn +
       "</td>\n" +
       "</tr>\n" +
@@ -501,7 +496,7 @@ export default class GeostatsControl extends M.Control {
 
   renderDatasetErrors(datasetErrorsMessage) {
     let html =
-      "<table class='table-container' width='100%' role='table'>\n" +
+      "<table class='table-container geostats-font-small' width='100%' role='table'>\n" +
       "<thead>\n" +
       "<tr class='flex-table header' role='rowgroup'>\n" +
       "<th class='flex-row first' role='columnheader'>line</th>\n" +
@@ -513,13 +508,13 @@ export default class GeostatsControl extends M.Control {
     for (let index = 0; index < datasetErrorsMessage.length; index++) {
       html +=
         "<tr class='flex-table row' role='rowgroup'>\n" +
-        "<td class='errorMessage flex-row first' role='cell'>" +
+        "<td class='geostats-td flex-row first' role='cell'>" +
         datasetErrorsMessage[index].row +
         "</td>\n" +
-        "<td class='errorMessage flex-row' role='cell'>" +
+        "<td class='geostats-td flex-row' role='cell'>" +
         datasetErrorsMessage[index].code +
         "</td>\n" +
-        "<td class='errorMessage flex-row' role='cell'>" +
+        "<td class='geostats-td flex-row' role='cell'>" +
         datasetErrorsMessage[index].message +
         "</td>\n" +
         "</tr>\n";
@@ -532,23 +527,42 @@ export default class GeostatsControl extends M.Control {
   }
 
   loadLayer() {
-    //this.activate();
-    this.colorValues = [];
-    for (let index = 0; index < this.uValues.length; index++) {
-      this.colorValues.push(chroma.random().hex());
-    }
-    this.serie.setColors(this.colorValues);
-
-    let bounds = this.serie.bounds;
-    let colors = this.serie.colors;
-
+    let selectedMethod = this.selectorMetodo.value;
+    let color = this.serie.colors;
+    let serie = this.serie;
+    let linkValue = this.linkValue;
+    let dataValue = this.dataValue;
     this.mvt.applyStyle_(
       new M.style.Polygon({
         fill: {
-          color: function (feature, map) {
-            let feature_name = feature.getAttribute("municipio");
-            let index_number = bounds.indexOf(feature_name);
-            return colors[index_number];
+          color: function (feature) {
+            let feature_id = feature.getAttribute("codsecc");
+            let indexLinkValue = linkValue.indexOf(parseInt(feature_id));
+
+            let selectedColor = null;
+
+            if (indexLinkValue != -1 && selectedMethod!='uniqueValues') {
+              selectedColor =
+                color[serie.getRangeNum(dataValue[indexLinkValue])];
+            }
+
+            if (indexLinkValue != -1 && selectedMethod=='uniqueValues') {
+              let bounds = serie.bounds;
+              let value  = dataValue[indexLinkValue];
+              let indexBounds = bounds.indexOf(value);
+              selectedColor = color[indexBounds];
+            }
+            // console.log(
+            //   "feature_id: " +
+            //     feature_id +
+            //     " esta en posición linkValue: " +
+            //     indexLinkValue +
+            //     " valor: " +
+            //     dataValue[indexLinkValue] +
+            //     " color: " +
+            //     selectedColor
+            // );
+            return selectedColor;
           },
           opacity: 0.9,
         },
@@ -559,5 +573,15 @@ export default class GeostatsControl extends M.Control {
         },
       })
     );
+  }
+
+  setStyle(feature_id) {
+    console.log(feature_id);
+    // for (let index = 0; index < this.dataField.length; index++) {
+    //   const element = this.dataField[index];
+    //   console.log(element);
+    //   this.serie.getRangeNum(element);
+    //   console.log(this.colorValues[this.serie.getRangeNum(element)]);
+    // }
   }
 }
