@@ -133,6 +133,43 @@ li.geostats-li{
   display:flex;
 }
 
+.geostats-legend-container{
+  height: auto;
+  position: relative;
+}
+
+.geostats-legend {
+  position: relative;
+  width: 100%;
+  overflow: auto !important;
+  max-height: 330px;
+}
+
+.geostats-legend div {
+  margin:3px 10px 5px 10px;
+  clear:left;
+}
+
+.geostats-legend-title {
+  font-weight: bold;
+  margin-bottom: 4px;
+}
+
+.geostats-legend-block {
+  border: 1px solid #555555;
+  display: block;
+  float: left;
+  height: 12px;
+  margin: 0 5px 0 20px;
+  width: 20px;
+}
+
+.geostats-legend-counter { 
+  font-size: 0.8em;
+  color:#666;
+  font-style: italic;
+}
+
 #SelectLinkColumn, #SelectDataColumn{
   width:80%;
   margin-top: 5px;
@@ -230,7 +267,7 @@ div.m-message {
 }
 
 
-td.errorMessage {
+td.geostats-td {
   border: 1px solid #d9d9d9;
   padding: 0.5em;
 }
