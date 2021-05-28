@@ -5,6 +5,7 @@
 
 import GeostatsImplControl from "impl/geostatscontrol";
 import template from "templates/geostats";
+import templateDatasetPreview from "templates/templateDatasetPreview";
 import templateDatasetErrors from "templates/templateDatasetErrors";
 import templateDatasetMetadata from "templates/templateDatasetMetadata";
 import templateDatasetInfo from "templates/templateDatasetInfo";
@@ -156,7 +157,8 @@ export default class GeostatsControl extends M.Control {
         preview: 3,
         dynamicTyping: true,
         complete: (results) => {
-          this.previewDataset(results);
+          //this.previewDataset(results);
+          this.renderDataSetPreview(results);
         },
       });
       this.csvLoadButton.disabled = false;
@@ -290,6 +292,7 @@ export default class GeostatsControl extends M.Control {
       "</select>" +
       "</div>\n" +
       "</div>\n";
+
     M.dialog.info(html, "Previsualización archivo " + this.file.files[0].name);
 
     let csvHeaderValue = document.getElementById("csvHeader");
@@ -387,6 +390,68 @@ export default class GeostatsControl extends M.Control {
     }
   }
 
+  renderDataSetPreview(dataset) {
+    let firstRow = dataset.data[0];
+    let data = dataset.data;
+    let templateVars = {
+      vars: {
+        firstRow: firstRow,
+        data: data,
+        header: this.csv_header,
+      },
+    };
+    let htmlDataSetPreview = M.template.compileSync(templateDatasetPreview, templateVars);
+    M.dialog.info(htmlDataSetPreview.innerHTML, "Previsualización archivo " + this.file.files[0].name);
+
+    let csvHeaderValue = document.getElementById("csvHeader");
+    let selectorLinkColumn = document.getElementById("SelectLinkColumn");
+    let selectorDataColumn = document.getElementById("SelectDataColumn");
+
+    selectorLinkColumn.addEventListener("change", () => {
+      this.linkField = selectorLinkColumn.value.toString();
+      let dataColumnOptions = document
+        .getElementById("SelectDataColumn")
+        .getElementsByTagName("option");
+      for (var i = 0; i < dataColumnOptions.length; i++) {
+        dataColumnOptions[i].value == this.linkField
+          ? (dataColumnOptions[i].disabled = true)
+          : (dataColumnOptions[i].disabled = false);
+      }
+    });
+    selectorDataColumn.addEventListener("change", () => {
+      this.dataField = selectorDataColumn.value.toString();
+      let linkColumnOptions = document
+        .getElementById("SelectLinkColumn")
+        .getElementsByTagName("option");
+      for (var i = 0; i < linkColumnOptions.length; i++) {
+        linkColumnOptions[i].value == this.dataField
+          ? (linkColumnOptions[i].disabled = true)
+          : (linkColumnOptions[i].disabled = false);
+      }
+    });
+    csvHeaderValue.addEventListener("change", () => {
+      // let linkColumn = document.getElementById("SelectLinkColumn");
+      // let dataColumn = document.getElementById("SelectDataColumn");
+      let table = document.getElementById("dataPreviewTable");
+
+      if (csvHeaderValue.checked) {
+        firstRow = table.rows[0];
+        firstRow.classList.toggle("bold");
+        this.csv_header = true;
+      } else {
+        firstRow.classList.toggle("bold");
+      }
+      // linkColumn.innerHTML = this.setLinkColumn(
+      //   this.csvFirstRow,
+      //   csvHeaderValue.checked
+      // );
+      // dataColumn.innerHTML = this.setLinkColumn(
+      //   this.csvFirstRow,
+      //   csvHeaderValue.checked
+      // );
+    });
+  }
+
   renderDataSetInfo() {
     let templateVars = {
       vars: {
@@ -396,9 +461,9 @@ export default class GeostatsControl extends M.Control {
         median: this.serie.median(),
         variance: this.serie.variance(),
         cov: this.serie.cov(),
-        stddev: this.serie.stddev()
+        stddev: this.serie.stddev(),
       },
-    }; 
+    };
     let html = M.template.compileSync(templateDatasetInfo, templateVars);
     this.parseResults.innerHTML = html.outerHTML;
   }
