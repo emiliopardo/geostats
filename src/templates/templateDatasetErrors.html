@@ -1,0 +1,22 @@
+<table class="table-container geostats-font-small" role="table">
+  <thead>
+    <tr class="flex-table header" role="rowgroup">
+      <th class="flex-row first" role="columnheader">line</th>
+      <th class="flex-row" role="columnheader">code</th>
+      <th class="flex-row" role="columnheader">message</th>
+    </tr>
+  </thead>
+  <tbody>
+    {{#each datasetErrors}}
+    <tr class="flex-table row" role="rowgroup">
+      <td class="geostats-td flex-row first" role="cell">
+        {{row}}
+      </td>
+      <td class="geostats-td flex-row" role="cell">{{code}}</td>
+      <td class="geostats-td flex-row" role="cell">
+        {{message}}
+      </td>
+    </tr>
+    {{/each}}
+  </tbody>
+</table>

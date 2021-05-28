@@ -5,6 +5,7 @@
 
 import GeostatsImplControl from "impl/geostatscontrol";
 import template from "templates/geostats";
+import templateDatasetErrors from "templates/templateDatasetErrors";
 import Papa from "papaparse";
 import geostats from "geostats";
 import chroma from "chroma-js";
@@ -349,6 +350,16 @@ export default class GeostatsControl extends M.Control {
         html += "<option value=" + z + ">columna " + (z + 1) + "</option>\n";
       }
     }
+
+    // let data=[]
+    // for (let z = 0; z < columns.length; z++) {
+    //   if (header) {
+    //     data.push(columns[z]);
+    //   } else {
+    //     data.push("columna "+(z+1));
+    //   }
+    // }
+    // console.log(data);
     return html;
   }
 
@@ -495,33 +506,11 @@ export default class GeostatsControl extends M.Control {
   }
 
   renderDatasetErrors(datasetErrorsMessage) {
-    let html =
-      "<table class='table-container geostats-font-small' width='100%' role='table'>\n" +
-      "<thead>\n" +
-      "<tr class='flex-table header' role='rowgroup'>\n" +
-      "<th class='flex-row first' role='columnheader'>line</th>\n" +
-      "<th class='flex-row' role='columnheader'>code</th>\n" +
-      "<th class='flex-row' role='columnheader'>message</th>\n" +
-      "</tr>\n" +
-      "</thead>\n" +
-      "<tbody>\n";
-    for (let index = 0; index < datasetErrorsMessage.length; index++) {
-      html +=
-        "<tr class='flex-table row' role='rowgroup'>\n" +
-        "<td class='geostats-td flex-row first' role='cell'>" +
-        datasetErrorsMessage[index].row +
-        "</td>\n" +
-        "<td class='geostats-td flex-row' role='cell'>" +
-        datasetErrorsMessage[index].code +
-        "</td>\n" +
-        "<td class='geostats-td flex-row' role='cell'>" +
-        datasetErrorsMessage[index].message +
-        "</td>\n" +
-        "</tr>\n";
-    }
-    html += "</tbody>\n" + "</table>";
+    let templateVars = { vars: { datasetErrors: datasetErrorsMessage } };
+    let html = M.template.compileSync(templateDatasetErrors, templateVars);
+    let htmlErrorTable = html.outerHTML;
     M.dialog.error(
-      html,
+      htmlErrorTable,
       "Error al procesar el archivo " + this.file.files[0].name
     );
   }
@@ -535,20 +524,20 @@ export default class GeostatsControl extends M.Control {
     this.mvt.applyStyle_(
       new M.style.Polygon({
         fill: {
-          color: function (feature) {
+          color: (feature) => {
             let feature_id = feature.getAttribute("codsecc");
             let indexLinkValue = linkValue.indexOf(parseInt(feature_id));
 
             let selectedColor = null;
 
-            if (indexLinkValue != -1 && selectedMethod!='uniqueValues') {
+            if (indexLinkValue != -1 && selectedMethod != "uniqueValues") {
               selectedColor =
                 color[serie.getRangeNum(dataValue[indexLinkValue])];
             }
 
-            if (indexLinkValue != -1 && selectedMethod=='uniqueValues') {
+            if (indexLinkValue != -1 && selectedMethod == "uniqueValues") {
               let bounds = serie.bounds;
-              let value  = dataValue[indexLinkValue];
+              let value = dataValue[indexLinkValue];
               let indexBounds = bounds.indexOf(value);
               selectedColor = color[indexBounds];
             }
