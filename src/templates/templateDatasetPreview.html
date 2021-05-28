@@ -1,0 +1,72 @@
+<div>
+<div>
+  <table
+    class="table-container geostats-font-small"
+    role="table"
+    id="dataPreviewTable"
+  >
+    <tbody>
+      {{#each data}}
+      <tr class="flex-table header" role="rowgroup">
+        <td class="geostats-td flex-row first" role="cell">{{@index}}</td>
+        <td class="geostats-td flex-row" role="cell">{{this}}</td>
+        {{/each}}
+      </tr>
+    </tbody>
+  </table>
+</div>
+<div>
+  <li class="geostats-li">
+    <input
+      class="geostats-input-checkbox"
+      type="checkbox"
+      name="csvHeader"
+      id="csvHeader"
+    />
+    <label
+      id="labelcsvHeader"
+      class="geostats-input-label-inline"
+      for="csvHeader"
+      >El CSV incluye Cabecera</label
+    >
+  </li>
+</div>
+<div id="csvParameters">
+  <div id="divLinkColumn">
+    <label
+      id="labelSelectLinkColumn"
+      class="geostats-input-label-inline"
+      for="SelectLinkColumn"
+      >Seleccione el campo de enlace</label
+    >
+    <select
+      class="geostats-select"
+      name="SelectLinkColumn"
+      id="SelectLinkColumn"
+    >
+      <option value="" selected="selected">Seleccione una opción...</option>
+      {{#each firstRow}}
+      <option value="{{this}}">{{this}}</option>
+      {{/each}}
+    </select>
+  </div>  
+  <div id="divDataColumn">
+    <label
+      id="labelSelectDataColumn"
+      class="geostats-input-label-inline"
+      for="SelectDataColumn"
+      >Seleccione variable</label
+    >
+    <select
+      class="geostats-select"
+      name="SelectDataColumn"
+      id="SelectDataColumn"
+    >
+      <option value="" selected="selected">Seleccione una opción...</option>
+      {{#each firstRow}}
+      <option value="{{this}}">{{this}}</option>
+      {{/each}}
+    </select>
+  </div>
+</div>
+</div>
