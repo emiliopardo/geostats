@@ -6,6 +6,8 @@
 import GeostatsImplControl from "impl/geostatscontrol";
 import template from "templates/geostats";
 import templateDatasetErrors from "templates/templateDatasetErrors";
+import templateDatasetMetadata from "templates/templateDatasetMetadata";
+import templateDatasetInfo from "templates/templateDatasetInfo";
 import Papa from "papaparse";
 import geostats from "geostats";
 import chroma from "chroma-js";
@@ -386,54 +388,19 @@ export default class GeostatsControl extends M.Control {
   }
 
   renderDataSetInfo() {
-    let html =
-      "<table class='table-container geostats-font-small' width='100%' role='table' id='dataPreviewTable'>\n" +
-      "<tbody>\n" +
-      "<tr class='flex-table header' role='rowgroup'>\n" +
-      "<td class='geostats-td flex-row first bold' role='cell'>Valor mínimo</td>" +
-      "<td class='geostats-td flex-row' role='cell'>" +
-      this.serie.min() +
-      "</td>\n" +
-      "</tr>\n" +
-      "<tr class='flex-table header' role='rowgroup'>\n" +
-      "<td class='geostats-td flex-row first bold' role='cell'>Valor máximo</td>" +
-      "<td class='geostats-td flex-row' role='cell'>" +
-      this.serie.max() +
-      "</td>\n" +
-      "</tr>\n" +
-      "<tr class='flex-table header' role='rowgroup'>\n" +
-      "<td class='geostats-td flex-row first bold' role='cell'>Media</td>" +
-      "<td class='geostats-td flex-row' role='cell'>" +
-      this.serie.mean() +
-      "</td>\n" +
-      "</tr>\n" +
-      "<tr class='flex-table header' role='rowgroup'>\n" +
-      "<td class='geostats-td flex-row first bold' role='cell'>Mediana</td>\n" +
-      "<td class='geostats-td flex-row' role='cell'>\n" +
-      this.serie.median() +
-      "</td>\n" +
-      "</tr>\n" +
-      "<tr class='flex-table header' role='rowgroup'>\n" +
-      "<td class='geostats-td flex-row first bold' role='cell'>Variancia</td>\n" +
-      "<td class='geostats-td flex-row' role='cell'>\n" +
-      this.serie.variance() +
-      "</td>\n" +
-      "</tr>\n" +
-      "<tr class='flex-table header' role='rowgroup'>\n" +
-      "<td class='geostats-td flex-row first bold' role='cell'>Coeficiente de variación</td>\n" +
-      "<td class='geostats-td flex-row' role='cell'>\n" +
-      this.serie.cov() +
-      "</td>\n" +
-      "</tr>\n" +
-      "<tr class='flex-table header' role='rowgroup'>\n" +
-      "<td class='geostats-td flex-row first bold' role='cell'>Desviación estandar</td>\n" +
-      "<td class='geostats-td flex-row' role='cell'>\n" +
-      this.serie.stddev() +
-      "</td>\n" +
-      "</tr>\n" +
-      "</tbody>\n" +
-      "</table>\n";
-    this.parseResults.innerHTML = html;
+    let templateVars = {
+      vars: {
+        min: this.serie.min(),
+        max: this.serie.max(),
+        mean: this.serie.mean(),
+        median: this.serie.median(),
+        variance: this.serie.variance(),
+        cov: this.serie.cov(),
+        stddev: this.serie.stddev()
+      },
+    }; 
+    let html = M.template.compileSync(templateDatasetInfo, templateVars);
+    this.parseResults.innerHTML = html.outerHTML;
   }
 
   renderDatasetMetadata(dataset) {
@@ -462,45 +429,19 @@ export default class GeostatsControl extends M.Control {
       dataColumn = "columna " + (parseInt(this.dataField) + 1);
     }
 
-    let html =
-      "<div>\n" +
-      "<table class='table-container geostats-font-small' width='100%' role='table' id='dataPreviewTable'>\n" +
-      "<tbody>\n" +
-      "<tr class='flex-table header' role='rowgroup'>\n" +
-      "<td class='geostats-td flex-row first bold' role='cell'>Registros</td>" +
-      "<td class='geostats-td flex-row' role='cell'>" +
-      rowCount +
-      "</td>\n" +
-      "</tr>\n" +
-      "<tr class='flex-table header' role='rowgroup'>\n" +
-      "<td class='geostats-td flex-row first bold' role='cell'>Delimitador</td>" +
-      "<td class='geostats-td flex-row' role='cell'>" +
-      delimiter +
-      "</td>\n" +
-      "</tr>\n" +
-      "<tr class='flex-table header' role='rowgroup'>\n" +
-      "<td class='geostats-td flex-row first bold' role='cell'>Salto de linea</td>" +
-      "<td class='geostats-td flex-row' role='cell'>" +
-      linebreak +
-      "</td>\n" +
-      "</tr>\n" +
-      "<tr class='flex-table header' role='rowgroup'>\n" +
-      "<td class='geostats-td flex-row first bold' role='cell'>Campo de enlace</td>\n" +
-      "<td class='geostats-td flex-row' role='cell'>\n" +
-      linkColumn +
-      "</td>\n" +
-      "</tr>\n" +
-      "<tr class='flex-table header' role='rowgroup'>\n" +
-      "<td class='geostats-td flex-row first bold' role='cell'>Campo de datos</td>\n" +
-      "<td class='geostats-td flex-row' role='cell'>\n" +
-      dataColumn +
-      "</td>\n" +
-      "</tr>\n" +
-      "</tbody>\n" +
-      "</table>\n" +
-      "</div>\n";
+    let templateVars = {
+      vars: {
+        rowCount: rowCount,
+        delimiter: delimiter,
+        linebreak: linebreak,
+        linkColumn: linkColumn,
+        dataColumn: dataColumn,
+      },
+    };
+    let html = M.template.compileSync(templateDatasetMetadata, templateVars);
+    let htmlMetadataTable = html.outerHTML;
     M.dialog.success(
-      html,
+      htmlMetadataTable,
       "Archivo " + this.file.files[0].name + " cargado con éxito"
     );
   }
@@ -562,15 +503,5 @@ export default class GeostatsControl extends M.Control {
         },
       })
     );
-  }
-
-  setStyle(feature_id) {
-    console.log(feature_id);
-    // for (let index = 0; index < this.dataField.length; index++) {
-    //   const element = this.dataField[index];
-    //   console.log(element);
-    //   this.serie.getRangeNum(element);
-    //   console.log(this.colorValues[this.serie.getRangeNum(element)]);
-    // }
   }
 }
