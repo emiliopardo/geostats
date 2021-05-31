@@ -157,7 +157,6 @@ export default class GeostatsControl extends M.Control {
         preview: 3,
         dynamicTyping: true,
         complete: (results) => {
-          //this.previewDataset(results);
           this.renderDataSetPreview(results);
         },
       });
@@ -251,123 +250,6 @@ export default class GeostatsControl extends M.Control {
     this.load.disabled = false;
   }
 
-  previewDataset(dataset) {
-    this.csvFirstRow = dataset.data[0];
-    let firstRow = "";
-    let html =
-      "<div>\n" +
-      "<table class='table-container geostats-font-small' width='100%' role='table' id='dataPreviewTable'>\n" +
-      "<tbody>\n";
-    for (let y = 0; y < dataset.data.length; y++) {
-      html +=
-        "<tr class='flex-table header' role='rowgroup'>\n" +
-        "<td class='geostats-td flex-row first' role='cell'>" +
-        (y + 1) +
-        "</td>\n" +
-        "<td class='geostats-td flex-row' role='cell'>\n" +
-        dataset.data[y] +
-        "</td>\n";
-    }
-    html +=
-      "</tbody>\n" +
-      "</table>\n" +
-      "</div>\n" +
-      "<div>\n" +
-      "<li class='geostats-li'>\n" +
-      "<input class='geostats-input-checkbox' type='checkbox' name='csvHeader' id='csvHeader' />\n" +
-      "<label id='labelcsvHeader' class='geostats-input-label-inline' for='csvHeader'>El CSV incluye Cabecera</label>\n" +
-      "</li>\n" +
-      "</div>\n" +
-      "<div id='csvParameters'>\n" +
-      "<div id='divLinkColumn'>\n" +
-      "<label id='labelSelectLinkColumn' class='geostats-input-label-inline' for='SelectLinkColumn'>Seleccione el campo de enlace</label>\n" +
-      "<select class='geostats-select' name='SelectLinkColumn' id='SelectLinkColumn'>\n" +
-      this.setLinkColumn(this.csvFirstRow, false) +
-      "</select>\n" +
-      "</div>\n" +
-      "<div id='divDataColumn'>\n" +
-      "<label id='labelSelectDataColumn' class='geostats-input-label-inline' for='SelectDataColumn'>Seleccione variable</label>\n" +
-      "<select class='geostats-select' name='SelectDataColumn' id='SelectDataColumn'>\n" +
-      this.setLinkColumn(this.csvFirstRow, false) +
-      "</select>" +
-      "</div>\n" +
-      "</div>\n";
-
-    M.dialog.info(html, "Previsualización archivo " + this.file.files[0].name);
-
-    let csvHeaderValue = document.getElementById("csvHeader");
-    let selectorLinkColumn = document.getElementById("SelectLinkColumn");
-    let selectorDataColumn = document.getElementById("SelectDataColumn");
-
-    selectorLinkColumn.addEventListener("change", () => {
-      this.linkField = selectorLinkColumn.value.toString();
-      let dataColumnOptions = document
-        .getElementById("SelectDataColumn")
-        .getElementsByTagName("option");
-      for (var i = 0; i < dataColumnOptions.length; i++) {
-        dataColumnOptions[i].value == this.linkField
-          ? (dataColumnOptions[i].disabled = true)
-          : (dataColumnOptions[i].disabled = false);
-      }
-    });
-    selectorDataColumn.addEventListener("change", () => {
-      this.dataField = selectorDataColumn.value.toString();
-      let linkColumnOptions = document
-        .getElementById("SelectLinkColumn")
-        .getElementsByTagName("option");
-      for (var i = 0; i < linkColumnOptions.length; i++) {
-        linkColumnOptions[i].value == this.dataField
-          ? (linkColumnOptions[i].disabled = true)
-          : (linkColumnOptions[i].disabled = false);
-      }
-    });
-    csvHeaderValue.addEventListener("change", () => {
-      let linkColumn = document.getElementById("SelectLinkColumn");
-      let dataColumn = document.getElementById("SelectDataColumn");
-      let table = document.getElementById("dataPreviewTable");
-
-      if (csvHeaderValue.checked) {
-        firstRow = table.rows[0];
-        firstRow.classList.toggle("bold");
-        this.csv_header = true;
-      } else {
-        firstRow.classList.toggle("bold");
-      }
-      linkColumn.innerHTML = this.setLinkColumn(
-        this.csvFirstRow,
-        csvHeaderValue.checked
-      );
-      dataColumn.innerHTML = this.setLinkColumn(
-        this.csvFirstRow,
-        csvHeaderValue.checked
-      );
-    });
-  }
-
-  setLinkColumn(columns, header) {
-    let html =
-      "<option value='' selected='selected'>Seleccione una opción...</option>\n";
-    for (let z = 0; z < columns.length; z++) {
-      if (header) {
-        const value = columns[z];
-        html += "<option value=" + value + ">" + value + "</option>\n";
-      } else {
-        html += "<option value=" + z + ">columna " + (z + 1) + "</option>\n";
-      }
-    }
-
-    // let data=[]
-    // for (let z = 0; z < columns.length; z++) {
-    //   if (header) {
-    //     data.push(columns[z]);
-    //   } else {
-    //     data.push("columna "+(z+1));
-    //   }
-    // }
-    // console.log(data);
-    return html;
-  }
-
   parseDataset(dataset) {
     if (dataset.errors.length > 0) {
       this.renderDatasetErrors(dataset.errors);
@@ -400,8 +282,14 @@ export default class GeostatsControl extends M.Control {
         header: this.csv_header,
       },
     };
-    let htmlDataSetPreview = M.template.compileSync(templateDatasetPreview, templateVars);
-    M.dialog.info(htmlDataSetPreview.innerHTML, "Previsualización archivo " + this.file.files[0].name);
+    let htmlDataSetPreview = M.template.compileSync(
+      templateDatasetPreview,
+      templateVars
+    );
+    M.dialog.info(
+      htmlDataSetPreview.innerHTML,
+      "Previsualización archivo " + this.file.files[0].name
+    );
 
     let csvHeaderValue = document.getElementById("csvHeader");
     let selectorLinkColumn = document.getElementById("SelectLinkColumn");
@@ -430,8 +318,6 @@ export default class GeostatsControl extends M.Control {
       }
     });
     csvHeaderValue.addEventListener("change", () => {
-      // let linkColumn = document.getElementById("SelectLinkColumn");
-      // let dataColumn = document.getElementById("SelectDataColumn");
       let table = document.getElementById("dataPreviewTable");
 
       if (csvHeaderValue.checked) {
@@ -441,14 +327,6 @@ export default class GeostatsControl extends M.Control {
       } else {
         firstRow.classList.toggle("bold");
       }
-      // linkColumn.innerHTML = this.setLinkColumn(
-      //   this.csvFirstRow,
-      //   csvHeaderValue.checked
-      // );
-      // dataColumn.innerHTML = this.setLinkColumn(
-      //   this.csvFirstRow,
-      //   csvHeaderValue.checked
-      // );
     });
   }
 
@@ -531,6 +409,7 @@ export default class GeostatsControl extends M.Control {
       new M.style.Polygon({
         fill: {
           color: (feature) => {
+            //identificador unico capas vector tiles
             let feature_id = feature.getAttribute("codsecc");
             let indexLinkValue = linkValue.indexOf(parseInt(feature_id));
 
@@ -547,16 +426,6 @@ export default class GeostatsControl extends M.Control {
               let indexBounds = bounds.indexOf(value);
               selectedColor = color[indexBounds];
             }
-            // console.log(
-            //   "feature_id: " +
-            //     feature_id +
-            //     " esta en posición linkValue: " +
-            //     indexLinkValue +
-            //     " valor: " +
-            //     dataValue[indexLinkValue] +
-            //     " color: " +
-            //     selectedColor
-            // );
             return selectedColor;
           },
           opacity: 0.9,
