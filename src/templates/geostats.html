@@ -35,8 +35,8 @@
           disabled
         />
         <span class="geostats-info"
-        >* Seleccione el fichero con la variable a representar (CSV)</span
-      >
+          >* Seleccione el fichero con la variable a representar (CSV)</span
+        >
         <input
           type="button"
           class="geostats-input-button"
@@ -46,13 +46,13 @@
           disabled="disabled"
         />
         <div id="parseResults"></div>
-        </div>
-        <div class="geostats-input-container">
+      </div>
+      <div class="geostats-input-container">
         <label
           id="labelSelectMetodo"
           class="geostats-input-label"
           for="SelectMetodo"
-          ><i class="g-cartografia-herramienta"></i> Método de Representación
+          ><i class="g-cartografia-herramienta"></i> Representación
         </label>
         <select
           class="geostats-select"
@@ -70,7 +70,11 @@
           <option value="naturalBreaksJenks">Rupturas Naturales (Jenks)</option>
         </select>
         <span class="geostats-info"
-          >* Seleccione un método de representación</span
+          >* Seleccione un método de clasificación</span
+        >
+        <input type="number" class="geostats-input-number" id="inputnbClass" name="inputnbClass" min="1" max="7" steps=1 value=5 disabled="disabled">
+        <span class="geostats-info"
+          >* Seleccione número de intervalos</span
         >
       </div>
       <div id="legend" class="geostats-legend-container"></div>
