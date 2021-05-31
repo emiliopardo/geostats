@@ -45,6 +45,10 @@ export default class GeostatsControl extends M.Control {
     this.csvFirstRow = null;
     this.linkField = null;
     this.dataField = null;
+
+    Handlebars.registerHelper("index_sum_1", function (number) {
+      return number + 1;
+    });
   }
 
   /**
@@ -82,6 +86,7 @@ export default class GeostatsControl extends M.Control {
     this.csvLoadButton = html.querySelector("input#csvLoadButton");
     this.load = html.querySelector("button#loadButton");
     this.parseResults = html.querySelector("div#parseResults");
+    this.nbClass = html.querySelector("input#inputnbClass");
     this.legend = html.querySelector("div#legend");
     this.selectorCapa.addEventListener("change", () =>
       this.setServiceURL(this.selectorCapa.value)
@@ -96,6 +101,10 @@ export default class GeostatsControl extends M.Control {
       this.setMetodo(this.selectorMetodo.value)
     );
     this.load.addEventListener("click", () => this.loadLayer());
+    this.nbClass.addEventListener("change", () => {
+      this.nbClassValue = this.nbClass.value;
+      this.setMetodo(this.selectorMetodo.value);
+    });
   }
 
   /**
@@ -177,6 +186,7 @@ export default class GeostatsControl extends M.Control {
         },
       });
       this.selectorMetodo.disabled = false;
+      this.nbClass.disabled = false;
     }
   }
 
@@ -212,41 +222,45 @@ export default class GeostatsControl extends M.Control {
   }
 
   setMetodo(metodo) {
-    let nbClass = 5;
-    let colors = chroma
+    this.nbClass.disabled = false;
+    this.colors = chroma
       .scale("YlGnBu")
-      .domain([this.serie.min(), this.serie.max()], nbClass)
+      .domain([this.serie.min(), this.serie.max()], this.nbClass.value)
       .colors();
     switch (metodo) {
       case "quantile":
-        this.uValues = this.serie.getClassQuantile(nbClass);
+        this.uValues = this.serie.getClassQuantile(this.nbClass.value);
         break;
       case "uniqueValues":
-        this.uValues = this.serie.getClassUniqueValues(nbClass);
+        this.nbClass.disabled = true;
+        this.uValues = this.serie.getClassUniqueValues(this.nbClass.value);
+        this.colors = [];
         for (let index = 0; index < this.uValues.length; index++) {
-          colors.push(chroma.random().hex());
+          this.colors.push(chroma.random().hex());
         }
         break;
       case "equalsIntervals":
-        this.uValues = this.serie.getClassEqInterval(nbClass);
+        this.uValues = this.serie.getClassEqInterval(this.nbClass.value);
         break;
       case "standarDesviation":
-        this.uValues = this.serie.getClassStdDeviation(nbClass);
+        this.uValues = this.serie.getClassStdDeviation(this.nbClass.value);
         break;
       case "arithmeticProgression":
-        this.uValues = this.serie.getClassArithmeticProgression(nbClass);
+        this.uValues = this.serie.getClassArithmeticProgression(
+          this.nbClass.value
+        );
         break;
       case "geometricProgression":
-        this.uValues = this.serie.getClassEqInterval(nbClass);
+        this.uValues = this.serie.getClassEqInterval(this.nbClass.value);
         break;
       case "naturalBreaksJenks":
-        this.uValues = this.serie.getClassJenks(nbClass);
+        this.uValues = this.serie.getClassJenks(this.nbClass.value);
         break;
       default:
         break;
     }
-    this.serie.setColors(colors);
-    this.legend.innerHTML = this.serie.getHtmlLegend(colors, "Leyenda", 0);
+    this.serie.setColors(this.colors);
+    this.legend.innerHTML = this.serie.getHtmlLegend(this.colors, "Leyenda", 0);
     this.load.disabled = false;
   }
 
@@ -279,9 +293,9 @@ export default class GeostatsControl extends M.Control {
       vars: {
         firstRow: firstRow,
         data: data,
-        header: this.csv_header,
       },
     };
+
     let htmlDataSetPreview = M.template.compileSync(
       templateDatasetPreview,
       templateVars
@@ -317,6 +331,7 @@ export default class GeostatsControl extends M.Control {
           : (linkColumnOptions[i].disabled = false);
       }
     });
+
     csvHeaderValue.addEventListener("change", () => {
       let table = document.getElementById("dataPreviewTable");
 
@@ -324,8 +339,11 @@ export default class GeostatsControl extends M.Control {
         firstRow = table.rows[0];
         firstRow.classList.toggle("bold");
         this.csv_header = true;
+        // this.setSelectorColumns(dataset.data[0]);
       } else {
         firstRow.classList.toggle("bold");
+        this.csv_header = false;
+        // this.setSelectorColumns(dataset.data[0]);
       }
     });
   }
@@ -397,6 +415,21 @@ export default class GeostatsControl extends M.Control {
       htmlErrorTable,
       "Error al procesar el archivo " + this.file.files[0].name
     );
+  }
+
+  setSelectorColumns(firstRow) {
+    //let selectorLinkColumn = document.getElementById("SelectLinkColumn");
+    //let selectorDataColumn = document.getElementById("SelectDataColumn");
+    // let selectOptions;
+    if (this.csv_header == false) {
+      // for (let index = 0; index < firstRow.length; index++) {
+      //   let options =
+      //     "<option value=" + index + ">columna " + (index + 1) + "</option>";
+      //   selectOptions.push(options);
+      //   console.log(selectOptions);
+      // }
+      console.log("no tiene cabeceras");
+    }
   }
 
   loadLayer() {
