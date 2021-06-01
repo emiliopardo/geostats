@@ -289,9 +289,17 @@ export default class GeostatsControl extends M.Control {
   renderDataSetPreview(dataset) {
     let firstRow = dataset.data[0];
     let data = dataset.data;
+    let fields = []
+
+    for (let index = 0; index < firstRow.length; index++) {
+      const element = "columna " + (index + 1);
+      fields.push(element)
+
+    }
+
     let templateVars = {
       vars: {
-        firstRow: firstRow,
+        firstRow: fields,
         data: data,
       },
     };
@@ -339,11 +347,11 @@ export default class GeostatsControl extends M.Control {
         firstRow = table.rows[0];
         firstRow.classList.toggle("bold");
         this.csv_header = true;
-        // this.setSelectorColumns(dataset.data[0]);
+        this.setSelectorColumns(dataset.data[0]);
       } else {
         firstRow.classList.toggle("bold");
         this.csv_header = false;
-        // this.setSelectorColumns(dataset.data[0]);
+        this.setSelectorColumns(dataset.data[0]);
       }
     });
   }
@@ -418,17 +426,22 @@ export default class GeostatsControl extends M.Control {
   }
 
   setSelectorColumns(firstRow) {
-    //let selectorLinkColumn = document.getElementById("SelectLinkColumn");
-    //let selectorDataColumn = document.getElementById("SelectDataColumn");
-    // let selectOptions;
-    if (this.csv_header == false) {
-      // for (let index = 0; index < firstRow.length; index++) {
-      //   let options =
-      //     "<option value=" + index + ">columna " + (index + 1) + "</option>";
-      //   selectOptions.push(options);
-      //   console.log(selectOptions);
-      // }
-      console.log("no tiene cabeceras");
+    let selectOptions = "<option value=\"\" selected=\"selected\">Seleccione una opción...</option>";
+    let selectorLinkColumn = document.getElementById("SelectLinkColumn");
+    let selectorDataColumn = document.getElementById("SelectDataColumn");
+    if (this.csv_header) {
+      for (let index = 0; index < firstRow.length; index++) {
+        selectOptions += "<option value=" + firstRow[index] + ">" + firstRow[index] + "</option>";
+      }
+      selectorDataColumn.innerHTML = selectOptions;
+      selectorLinkColumn.innerHTML = selectOptions;
+
+    } else {
+      for (let index = 0; index < firstRow.length; index++) {
+        selectOptions += "<option value=" + index + ">columna " + (index + 1) + "</option>";
+      }
+      selectorDataColumn.innerHTML = selectOptions;
+      selectorLinkColumn.innerHTML = selectOptions;
     }
   }
 
