@@ -58,6 +58,7 @@
   "dependencies": {
     "chroma-js": "^2.1.1",
     "geostats": "^2.0.0",
-    "papaparse": "^5.3.0"
+    "papaparse": "^5.3.0",
+    "vanilla-picker": "^2.11.2"
   }
 }

@@ -12,6 +12,7 @@ import templateDatasetInfo from "templates/templateDatasetInfo";
 import Papa from "papaparse";
 import geostats from "geostats";
 import chroma from "chroma-js";
+import Picker from "vanilla-picker";
 
 export default class GeostatsControl extends M.Control {
   /**
@@ -464,13 +465,14 @@ export default class GeostatsControl extends M.Control {
             if (indexLinkValue != -1 && selectedMethod != "uniqueValues") {
               selectedColor =
                 color[serie.getRangeNum(dataValue[indexLinkValue])];
-            }
-
-            if (indexLinkValue != -1 && selectedMethod == "uniqueValues") {
+            } else if (indexLinkValue != -1 && selectedMethod == "uniqueValues") {
               let bounds = serie.bounds;
               let value = dataValue[indexLinkValue];
               let indexBounds = bounds.indexOf(value);
               selectedColor = color[indexBounds];
+            } else{
+              //se añade para comprobar enlaces
+              selectedColor="#FF0000";
             }
             return selectedColor;
           },
