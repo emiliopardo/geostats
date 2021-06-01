@@ -12,7 +12,7 @@ import templateDatasetInfo from "templates/templateDatasetInfo";
 import Papa from "papaparse";
 import geostats from "geostats";
 import chroma from "chroma-js";
-import Picker from "vanilla-picker";
+//import Picker from "vanilla-picker";
 
 export default class GeostatsControl extends M.Control {
   /**

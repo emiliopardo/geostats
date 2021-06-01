@@ -259,6 +259,25 @@ li.geostats-li {
   position: absolute;
   bottom: 0px;
 }
+/* vanilla piker */
+.geostats-color-select {
+  position: relative;
+  display: inline-block;
+  box-sizing: border-box;
+  padding: .5em 1em;
+  min-height: 2em;
+  border: solid 1px #ccc;
+  outline: none;
+  overflow: visible;
+  
+  background-color: dodgerblue;
+  color: white;
+
+  font-family: sans-serif;
+  text-align: center;
+  cursor: pointer;
+}
+/* vanilla piker */
 
 span.geostats-info {
   font-size: 0.8em;
