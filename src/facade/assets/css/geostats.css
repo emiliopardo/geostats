@@ -79,6 +79,13 @@ label.geostats-input-label {
   padding: 5px;
 }
 
+label.geostats-input-label-small {
+  display: block;
+  margin-top: 5px;
+  padding: 5px;
+  font-size: 0.8em;
+}
+
 label.geostats-input-label-inline {
   margin-top: 5px;
   padding: 5px;
@@ -264,22 +271,48 @@ li.geostats-li {
   position: relative;
   display: inline-block;
   box-sizing: border-box;
-  padding: .5em 1em;
+  /* padding: .5em 1em; */
   min-height: 2em;
   border: solid 1px #ccc;
   outline: none;
   overflow: visible;
-  background-color: dodgerblue;
+  background-color: #ccc;
   color: white;
   font-family: sans-serif;
   text-align: center;
   cursor: pointer;
+  margin-left: 5px;
+}
+
+input[type="color"] {
+	-webkit-appearance: none;
+	border: none;
+	width: 32px;
+	height: 32px;
+}
+input[type="color"]::-webkit-color-swatch-wrapper {
+	padding: 0;
+}
+input[type="color"]::-webkit-color-swatch {
+	border: none;
 }
 
 .geostats-color-select:disabled{
   cursor:not-allowed;
+  background-color: #ccc;
 }
+
+.picker_wrapper.popup {
+  z-index: 9999;
+}
+
 /* vanilla piker */
+
+.geostats-color-select-container{
+    display: inline-block;
+    width: 45%;
+    text-align: center;
+}
 
 span.geostats-info {
   font-size: 0.8em;
