@@ -12,7 +12,6 @@ import templateDatasetInfo from "templates/templateDatasetInfo";
 import Papa from "papaparse";
 import geostats from "geostats";
 import chroma from "chroma-js";
-// import Picker from "vanilla-picker";
 
 export default class GeostatsControl extends M.Control {
   /**
@@ -48,12 +47,6 @@ export default class GeostatsControl extends M.Control {
     this.dataField = null;
     this.initColor = "#ffffd9";
     this.endColor = "#225ea8";
-    this.pickerOptions = {
-      alpha: false,
-      popup: "top",
-      editor: false,
-      cancelButton: true,
-    };
 
     Handlebars.registerHelper("index_sum_1", function (number) {
       return number + 1;
@@ -116,60 +109,14 @@ export default class GeostatsControl extends M.Control {
       this.nbClassValue = this.nbClass.value;
       this.setMetodo(this.selectorMetodo.value);
     });
-
-    // this.pickerInitColor = new Picker(this.buttonInitColor);
-    // this.pickerInitColor.setColor(this.initColor);
-    // this.pickerInitColor.setOptions({
-    //   alpha: false,
-    //   popup: "top",
-    //   editor: false,
-    //   cancelButton: true,
-    //   onChage: function (color) {
-    //     console.log(color.rgbString);
-    //     this.pickerInitColor.setColor(color);
-    //   },
-    //   onDone: function (color) {
-    //     let initColorbutton = html.querySelector("button#initColor");
-    //     initColorbutton.style.backgroundColor = color.rgbString;
-    //     console.log(color.rgba);
-    //     this.colors = chroma
-    //     .scale([color.rgba, this.endColor])
-    //     .domain([this.serie.min(), this.serie.max()], this.nbClass.value)
-    //     .colors(this.nbClass.value);
-    //   },
-    //   onCLose: function (color) {
-    //     let initColorbutton = html.querySelector("button#initColor");
-    //     initColorbutton.style.backgroundColor = color.rgbString;
-    //     console.log(color.rgba);
-    //     this.colors = chroma
-    //     .scale([color.rgba, this.endColor])
-    //     .domain([this.serie.min(), this.serie.max()], this.nbClass.value)
-    //     .colors(this.nbClass.value);
-    //   },
-    // });
-    // //this.pickerInitColor.openHandler();
-
-    // this.pickerEndColor = new Picker(this.buttonEndColor);
-    // this.pickerEndColor.setColor(this.endColor);
-    // this.pickerEndColor.setOptions({
-    //   alpha: false,
-    //   popup: "top",
-    //   editor: false,
-    //   cancelButton: true,
-    //   onChage: function (color) {
-    //     console.log(color.rgbString);
-    //     this.pickerEndColor.setColor(color);
-    //   },
-    //   onDone: function (color) {
-    //     let endColorbutton = html.querySelector("button#initColor");
-    //     endColorbutton.style.backgroundColor = color.rgbString;
-    //   },
-    //   onCLose: function (color) {
-    //     let endColorbutton = html.querySelector("button#initColor");
-    //     endColorbutton.style.backgroundColor = color.rgbString;
-    //   },
-    // });
-    // //this.pickerEndColor.openHandler();
+    this.buttonInitColor.addEventListener("change", () => {
+      this.initColor = this.buttonInitColor.value;
+      this.setLegend();
+    });
+    this.buttonEndColor.addEventListener("change", () => {
+      this.endColor = this.buttonEndColor.value;
+      this.setLegend();
+    });
   }
 
   /**
@@ -286,6 +233,32 @@ export default class GeostatsControl extends M.Control {
     this.file.disabled = false;
   }
 
+  setSelectorColumns(firstRow) {
+    let selectOptions =
+      '<option value="" selected="selected">Seleccione una opción...</option>';
+    let selectorLinkColumn = document.getElementById("SelectLinkColumn");
+    let selectorDataColumn = document.getElementById("SelectDataColumn");
+    if (this.csv_header) {
+      for (let index = 0; index < firstRow.length; index++) {
+        selectOptions +=
+          "<option value=" +
+          firstRow[index] +
+          ">" +
+          firstRow[index] +
+          "</option>";
+      }
+      selectorDataColumn.innerHTML = selectOptions;
+      selectorLinkColumn.innerHTML = selectOptions;
+    } else {
+      for (let index = 0; index < firstRow.length; index++) {
+        selectOptions +=
+          "<option value=" + index + ">columna " + (index + 1) + "</option>";
+      }
+      selectorDataColumn.innerHTML = selectOptions;
+      selectorLinkColumn.innerHTML = selectOptions;
+    }
+  }
+
   setMetodo(metodo) {
     this.nbClass.disabled = false;
     switch (metodo) {
@@ -330,14 +303,22 @@ export default class GeostatsControl extends M.Control {
       this.buttonInitColor.disabled = false;
       this.buttonEndColor.disabled = false;
       this.colors = chroma
-        .scale([this.initColor, this.endColor])
+        .scale([this.buttonInitColor.value, this.buttonEndColor.value])
         .domain([this.serie.min(), this.serie.max()], this.nbClass.value)
         .colors(this.nbClass.value);
     }
 
     this.serie.setColors(this.colors);
-    this.legend.innerHTML = this.serie.getHtmlLegend(this.colors, "Leyenda", 0);
+    this.setLegend();
     this.load.disabled = false;
+  }
+
+  setLegend() {
+    this.colors = chroma
+      .scale([this.buttonInitColor.value, this.buttonEndColor.value])
+      .domain([this.serie.min(), this.serie.max()], this.nbClass.value)
+      .colors(this.nbClass.value);
+    this.legend.innerHTML = this.serie.getHtmlLegend(this.colors, "Leyenda", 0);
   }
 
   parseDataset(dataset) {
@@ -500,34 +481,9 @@ export default class GeostatsControl extends M.Control {
     );
   }
 
-  setSelectorColumns(firstRow) {
-    let selectOptions =
-      '<option value="" selected="selected">Seleccione una opción...</option>';
-    let selectorLinkColumn = document.getElementById("SelectLinkColumn");
-    let selectorDataColumn = document.getElementById("SelectDataColumn");
-    if (this.csv_header) {
-      for (let index = 0; index < firstRow.length; index++) {
-        selectOptions +=
-          "<option value=" +
-          firstRow[index] +
-          ">" +
-          firstRow[index] +
-          "</option>";
-      }
-      selectorDataColumn.innerHTML = selectOptions;
-      selectorLinkColumn.innerHTML = selectOptions;
-    } else {
-      for (let index = 0; index < firstRow.length; index++) {
-        selectOptions +=
-          "<option value=" + index + ">columna " + (index + 1) + "</option>";
-      }
-      selectorDataColumn.innerHTML = selectOptions;
-      selectorLinkColumn.innerHTML = selectOptions;
-    }
-  }
-
   loadLayer() {
     let selectedMethod = this.selectorMetodo.value;
+
     let color = this.serie.colors;
     let serie = this.serie;
     let linkValue = this.linkValue;
@@ -555,7 +511,8 @@ export default class GeostatsControl extends M.Control {
               selectedColor = color[indexBounds];
             } else {
               //se añade para comprobar enlaces
-              selectedColor = "#FF0000";
+              //selectedColor = "#FF0000";
+              selectedColor = null;
             }
             return selectedColor;
           },
@@ -568,5 +525,6 @@ export default class GeostatsControl extends M.Control {
         },
       })
     );
+    this.setLegend();
   }
 }
