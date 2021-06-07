@@ -228,7 +228,7 @@ li.geostats-li {
   font-size: 13px;
 }
 
-.geostats-input-button{
+.geostats-input-button {
   cursor: not-allowed;
   margin-bottom: 5px;
 }
@@ -237,7 +237,7 @@ li.geostats-li {
 .geostats-input-number:disabled,
 .geostats-input-checkbox:disabled,
 .geostats-button:disabled,
-.geostats-select:disabled{
+.geostats-select:disabled {
   cursor: not-allowed;
   margin-bottom: 5px;
   background-color: #ccc;
@@ -266,12 +266,11 @@ li.geostats-li {
   position: absolute;
   bottom: 0px;
 }
-/* vanilla piker */
+
 .geostats-color-select {
   position: relative;
   display: inline-block;
   box-sizing: border-box;
-  /* padding: .5em 1em; */
   min-height: 2em;
   border: solid 1px #ccc;
   outline: none;
@@ -285,33 +284,27 @@ li.geostats-li {
 }
 
 input[type="color"] {
-	-webkit-appearance: none;
-	border: none;
-	width: 32px;
-	height: 32px;
+  -webkit-appearance: none;
+  border: none;
+  width: 32px;
+  height: 32px;
 }
 input[type="color"]::-webkit-color-swatch-wrapper {
-	padding: 0;
+  padding: 0;
 }
 input[type="color"]::-webkit-color-swatch {
-	border: none;
+  border: none;
 }
 
-.geostats-color-select:disabled{
-  cursor:not-allowed;
+.geostats-color-select:disabled {
+  cursor: not-allowed;
   background-color: #ccc;
 }
 
-.picker_wrapper.popup {
-  z-index: 9999;
-}
-
-/* vanilla piker */
-
-.geostats-color-select-container{
-    display: inline-block;
-    width: 45%;
-    text-align: center;
+.geostats-color-select-container {
+  display: inline-block;
+  width: 45%;
+  text-align: center;
 }
 
 span.geostats-info {
