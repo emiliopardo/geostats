@@ -111,11 +111,11 @@ export default class GeostatsControl extends M.Control {
     });
     this.buttonInitColor.addEventListener("change", () => {
       this.initColor = this.buttonInitColor.value;
-      this.setLegend();
+      this.setMetodo(this.selectorMetodo.value)
     });
     this.buttonEndColor.addEventListener("change", () => {
       this.endColor = this.buttonEndColor.value;
-      this.setLegend();
+      this.setMetodo(this.selectorMetodo.value)
     });
   }
 
@@ -262,9 +262,6 @@ export default class GeostatsControl extends M.Control {
   setMetodo(metodo) {
     this.nbClass.disabled = false;
     switch (metodo) {
-      case "quantile":
-        this.uValues = this.serie.getClassQuantile(this.nbClass.value);
-        break;
       case "uniqueValues":
         this.nbClass.disabled = true;
         this.buttonInitColor.value = "#cccccc";
@@ -276,28 +273,34 @@ export default class GeostatsControl extends M.Control {
         for (let index = 0; index < this.uValues.length; index++) {
           this.colors.push(chroma.random().hex());
         }
+        this.serie.setColors(this.colors);
+        this.serie.is_uniqueValues = true;
+        break;
+      case "quantile":
+        this.serie.getClassQuantile(this.nbClass.value);
         break;
       case "equalsIntervals":
-        this.uValues = this.serie.getClassEqInterval(this.nbClass.value);
+        this.serie.getClassEqInterval(this.nbClass.value);
         break;
       case "standarDesviation":
-        this.uValues = this.serie.getClassStdDeviation(this.nbClass.value);
+        this.serie.getClassStdDeviation(this.nbClass.value);
         break;
       case "arithmeticProgression":
-        this.uValues = this.serie.getClassArithmeticProgression(
+        this.serie.getClassArithmeticProgression(
           this.nbClass.value
         );
         break;
       case "geometricProgression":
-        this.uValues = this.serie.getClassEqInterval(this.nbClass.value);
+        this.serie.getClassEqInterval(this.nbClass.value);
         break;
       case "naturalBreaksJenks":
-        this.uValues = this.serie.getClassJenks(this.nbClass.value);
+        this.serie.getClassJenks(this.nbClass.value);
         break;
       default:
         break;
     }
     if (metodo != "uniqueValues") {
+      this.serie.is_uniqueValues = false;
       this.buttonInitColor.value = this.initColor;
       this.buttonEndColor.value = this.endColor;
       this.buttonInitColor.disabled = false;
@@ -305,20 +308,15 @@ export default class GeostatsControl extends M.Control {
       this.colors = chroma
         .scale([this.buttonInitColor.value, this.buttonEndColor.value])
         .domain([this.serie.min(), this.serie.max()], this.nbClass.value)
-        .colors(this.nbClass.value);
+        .colors((this.nbClass.value));
+      this.serie.setColors(this.colors);
+
     }
-
-    this.serie.setColors(this.colors);
-    this.setLegend();
+    this.legend.innerHTML = this.serie.getHtmlLegend(this.colors, "Leyenda", null, null, 'distinct', "DESC");
     this.load.disabled = false;
-  }
-
-  setLegend() {
-    this.colors = chroma
-      .scale([this.buttonInitColor.value, this.buttonEndColor.value])
-      .domain([this.serie.min(), this.serie.max()], this.nbClass.value)
-      .colors(this.nbClass.value);
-    this.legend.innerHTML = this.serie.getHtmlLegend(this.colors, "Leyenda", 0);
+    // if (this.mvt){
+    //   this.loadLayer();
+    // }
   }
 
   parseDataset(dataset) {
@@ -339,6 +337,8 @@ export default class GeostatsControl extends M.Control {
       }
 
       this.serie = new geostats(this.dataValue);
+      this.serie.legendSeparator = ' ⇔ ';
+      this.serie.setPrecision(2);
       this.renderDataSetInfo();
     }
   }
@@ -519,12 +519,34 @@ export default class GeostatsControl extends M.Control {
           opacity: 0.9,
         },
         stroke: {
-          color: "#000",
+          color: "#cccccc",
           width: 0.5,
           opacity: 0.9,
         },
       })
     );
-    this.setLegend();
+    this.legend.innerHTML = this.serie.getHtmlLegend(this.colors, "Leyenda", null, null, 'distinct', "DESC");
+
+    this.mvt.on(M.evt.HOVER_FEATURES, function (feature) {
+      // ojo a la propiedad que tiene que ser el id
+      let feature_id = feature[0].getAttribute("codsecc");
+      console.log(feature_id);
+      let olFeature =feature[0].getImpl().olFeature_;
+      console.log(olFeature);
+      // if (linkValue.indexOf(parseInt(feature_id))) {
+        // let selectedColor = color[serie.getRangeNum(dataValue[linkValue.indexOf(parseInt(feature_id))])]
+        // feature.setStyle(new M.style.Polygon({
+        //   fill: {
+        //     color: selectedColor,
+        //     opacity: 0.7
+        //   },
+        //   stroke: {
+        //     color: "#cccccc",
+        //     width: 2,
+        //     opacity: 0.9,
+        //   }
+        // }))
+      // }
+    })
   }
 }
