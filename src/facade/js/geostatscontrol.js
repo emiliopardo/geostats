@@ -493,7 +493,8 @@ export default class GeostatsControl extends M.Control {
         fill: {
           color: (feature) => {
             //identificador unico capas vector tiles
-            let feature_id = feature.getAttribute("codsecc");
+            // let feature_id = feature.getAttribute("codsecc");
+            let feature_id = feature.getAttribute("id");
             let indexLinkValue = linkValue.indexOf(parseInt(feature_id));
 
             let selectedColor = null;
@@ -529,7 +530,8 @@ export default class GeostatsControl extends M.Control {
 
     this.mvt.on(M.evt.HOVER_FEATURES, function (feature) {
       // ojo a la propiedad que tiene que ser el id
-      let feature_id = feature[0].getAttribute("codsecc");
+      // let feature_id = feature[0].getAttribute("codsecc");
+      let feature_id = feature[0].getAttribute("id");
       console.log(feature_id);
       let olFeature =feature[0].getImpl().olFeature_;
       console.log(olFeature);
