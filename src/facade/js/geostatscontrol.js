@@ -492,7 +492,7 @@ export default class GeostatsControl extends M.Control {
       new M.style.Polygon({
         fill: {
           color: (feature) => {
-            //identificador unico capas vector tiles
+            //identificador unico features capas vector tiles
             // let feature_id = feature.getAttribute("codsecc");
             let feature_id = feature.getAttribute("id");
             let indexLinkValue = linkValue.indexOf(parseInt(feature_id));
@@ -529,7 +529,7 @@ export default class GeostatsControl extends M.Control {
     this.legend.innerHTML = this.serie.getHtmlLegend(this.colors, "Leyenda", null, null, 'distinct', "DESC");
 
     this.mvt.on(M.evt.HOVER_FEATURES, function (feature) {
-      // ojo a la propiedad que tiene que ser el id
+      //identificador unico features capas vector tiles
       // let feature_id = feature[0].getAttribute("codsecc");
       let feature_id = feature[0].getAttribute("id");
       console.log(feature_id);
