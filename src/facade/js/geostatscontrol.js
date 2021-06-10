@@ -111,11 +111,11 @@ export default class GeostatsControl extends M.Control {
     });
     this.buttonInitColor.addEventListener("change", () => {
       this.initColor = this.buttonInitColor.value;
-      this.setMetodo(this.selectorMetodo.value)
+      this.setMetodo(this.selectorMetodo.value);
     });
     this.buttonEndColor.addEventListener("change", () => {
       this.endColor = this.buttonEndColor.value;
-      this.setMetodo(this.selectorMetodo.value)
+      this.setMetodo(this.selectorMetodo.value);
     });
   }
 
@@ -205,7 +205,7 @@ export default class GeostatsControl extends M.Control {
   setServiceURL(url) {
     this.service_url = url;
 
-    const estilo2 = new M.style.Polygon({
+    const estilo = new M.style.Polygon({
       fill: {
         color: "#7c7c7c",
         opacity: 0.9,
@@ -227,7 +227,7 @@ export default class GeostatsControl extends M.Control {
         projection: "EPSG:3857",
       });
       this.map_.addLayers(this.mvt);
-      this.mvt.applyStyle_(estilo2);
+      this.mvt.applyStyle_(estilo);
     }
 
     this.file.disabled = false;
@@ -286,9 +286,7 @@ export default class GeostatsControl extends M.Control {
         this.serie.getClassStdDeviation(this.nbClass.value);
         break;
       case "arithmeticProgression":
-        this.serie.getClassArithmeticProgression(
-          this.nbClass.value
-        );
+        this.serie.getClassArithmeticProgression(this.nbClass.value);
         break;
       case "geometricProgression":
         this.serie.getClassEqInterval(this.nbClass.value);
@@ -308,15 +306,18 @@ export default class GeostatsControl extends M.Control {
       this.colors = chroma
         .scale([this.buttonInitColor.value, this.buttonEndColor.value])
         .domain([this.serie.min(), this.serie.max()], this.nbClass.value)
-        .colors((this.nbClass.value));
+        .colors(this.nbClass.value);
       this.serie.setColors(this.colors);
-
     }
-    this.legend.innerHTML = this.serie.getHtmlLegend(this.colors, "Leyenda", null, null, 'distinct', "DESC");
+    this.legend.innerHTML = this.serie.getHtmlLegend(
+      this.colors,
+      "Leyenda",
+      null,
+      null,
+      "distinct",
+      "DESC"
+    );
     this.load.disabled = false;
-    // if (this.mvt){
-    //   this.loadLayer();
-    // }
   }
 
   parseDataset(dataset) {
@@ -337,7 +338,7 @@ export default class GeostatsControl extends M.Control {
       }
 
       this.serie = new geostats(this.dataValue);
-      this.serie.legendSeparator = ' ⇔ ';
+      this.serie.legendSeparator = " ⇔ ";
       this.serie.setPrecision(2);
       this.renderDataSetInfo();
     }
@@ -482,18 +483,35 @@ export default class GeostatsControl extends M.Control {
   }
 
   loadLayer() {
+    let service_url = this.service_url;
+    let selectedFeture = null;
+    let coordenada_X = null;
+    let coordenada_Y = null;
+    let popup = null;
+    let map = this.map_;
+    let linkField = this.linkField;
+    let dataField = this.dataField;
     let selectedMethod = this.selectorMetodo.value;
-
     let color = this.serie.colors;
     let serie = this.serie;
     let linkValue = this.linkValue;
     let dataValue = this.dataValue;
-    this.mvt.applyStyle_(
+    let capa = this.mvt;
+
+    let olMap = map.getMapImpl();
+    olMap.on("pointermove", function (e) {
+      if (e.dragging) {
+        return;
+      }
+      coordenada_X = e.coordinate[0];
+      coordenada_Y = e.coordinate[1];
+    });
+
+    capa.applyStyle_(
       new M.style.Polygon({
         fill: {
           color: (feature) => {
             //identificador unico features capas vector tiles
-            // let feature_id = feature.getAttribute("codsecc");
             let feature_id = feature.getAttribute("id");
             let indexLinkValue = linkValue.indexOf(parseInt(feature_id));
 
@@ -511,8 +529,6 @@ export default class GeostatsControl extends M.Control {
               let indexBounds = bounds.indexOf(value);
               selectedColor = color[indexBounds];
             } else {
-              //se añade para comprobar enlaces
-              //selectedColor = "#FF0000";
               selectedColor = null;
             }
             return selectedColor;
@@ -522,33 +538,77 @@ export default class GeostatsControl extends M.Control {
         stroke: {
           color: "#cccccc",
           width: 0.5,
-          opacity: 0.9,
         },
       })
     );
-    this.legend.innerHTML = this.serie.getHtmlLegend(this.colors, "Leyenda", null, null, 'distinct', "DESC");
 
-    this.mvt.on(M.evt.HOVER_FEATURES, function (feature) {
+    this.legend.innerHTML = this.serie.getHtmlLegend(
+      this.colors,
+      "Leyenda",
+      null,
+      null,
+      "distinct",
+      "DESC"
+    );
+    capa.on(M.evt.HOVER_FEATURES, function (feature) {
       //identificador unico features capas vector tiles
-      // let feature_id = feature[0].getAttribute("codsecc");
-      let feature_id = feature[0].getAttribute("id");
-      console.log(feature_id);
-      let olFeature =feature[0].getImpl().olFeature_;
-      console.log(olFeature);
-      // if (linkValue.indexOf(parseInt(feature_id))) {
-        // let selectedColor = color[serie.getRangeNum(dataValue[linkValue.indexOf(parseInt(feature_id))])]
-        // feature.setStyle(new M.style.Polygon({
-        //   fill: {
-        //     color: selectedColor,
-        //     opacity: 0.7
-        //   },
-        //   stroke: {
-        //     color: "#cccccc",
-        //     width: 2,
-        //     opacity: 0.9,
-        //   }
-        // }))
-      // }
-    })
+      let featureHover = feature[0].getAttribute("id");
+      let indexLinkValue = linkValue.indexOf(parseInt(featureHover));
+      if (indexLinkValue != -1) {
+        selectedFeture = new M.layer.MVT({
+          url: service_url,
+          name: "Selected Feature",
+          projection: "EPSG:3857",
+        });
+        map.addLayers(selectedFeture);
+        selectedFeture.applyStyle_(
+          new M.style.Polygon({
+            fill: {
+              color: (feature) => {
+                //identificador unico features capas vector tiles
+                let feature_id = feature.getAttribute("id");
+                if (featureHover == feature_id) {
+                  return "red";
+                }
+                return
+              },
+            },
+          })
+        );
+        let nombre = feature[0].getAttribute("municipio");
+
+        let myContent =
+          "<table><thead></thead><tbody><tr><td class='geostats-popup-key'>\n" +
+          "Municipio</td><td class='geostats-popup-value'>" +
+          nombre +
+          "</td></tr><tr><td class='geostats-popup-key'>" +
+          linkField +
+          "</td><td class='geostats-popup-value'>" +
+          linkValue[indexLinkValue] +
+          "</td></tr><tr><td class='geostats-popup-key'>" +
+          dataField +
+          "</td><td class='geostats-popup-value'>" +
+          dataValue[indexLinkValue] +
+          "</td></tr></tbody></table>";
+
+        let featureTabOpts = {
+          icon: "g-cartografia-pin",
+          title: "Información",
+          content: myContent,
+        };
+        popup = new M.Popup();
+        popup.addTab(featureTabOpts);
+        map.addPopup(popup, [coordenada_X, coordenada_Y]);
+      }
+    });
+
+    capa.on(M.evt.LEAVE_FEATURES, function (feature) {
+      if (popup) {
+        map.removePopup(popup);
+      }
+      if (selectedFeture) {
+        map.removeLayers(selectedFeture);
+      }
+    });
   }
 }
