@@ -8,7 +8,18 @@
 
  El fichero CSV debe tener un identificador unívoco que relacione la variable con el objeto espacial por ejemplo código municipal, código provincial o código seccion censal
  
+ ## Uso
  
+ Salvo el selector de capas todos los input se encuentran deshabilitados hasta que no se ha completado o selecionado los datos previos para su uso
+
+ Los pasos necesarios para la la visualización final de la información estadística serian los siguientes:
+
+ 1. Se selecciona la capa de información espacial con la cual se quiere enlazar los datos.
+ 2. Se carga el fichero csv.
+ 3. Se informa si el csv posee cabecera o no.
+ 4. Se define el campo de enlace o identificador único y la variable a representar.
+ 5. Se selecciona metodo de representación, número de intervalos y colores.
+ 6. Se representa la información.
  
  ![Imagen](./images/geostatsPlugin.png)
 
@@ -28,7 +39,7 @@
 
 
 
-## Recursos y uso
+## Recursos y configuración
 
 - js: geostats.ol.min.js
 - css: geostats.min.css
