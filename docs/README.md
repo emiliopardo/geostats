@@ -35,7 +35,7 @@
 
 
 ```
-/objeto configurador del plugin
+//objeto configurador del plugin
 let vectorTileLayers = [
   {
     year: "Secciones censales (Año 2000)",
