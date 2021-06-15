@@ -6,7 +6,9 @@
 
  Plugin de [Mapea](https://github.com/sigcorporativo-ja/Mapea4) para la carga de variables estadísticas y su representación en un mapa mediante capas Vector Tiles. 
 
- El fichero CSV debe tener un identificador unívoco que relacione la variable con el objeto espacial por ejemplo código municipal, código provincial o código seccion censal
+ El fichero CSV debe tener un identificador unívoco que relacione la variable con el objeto espacial por ejemplo código municipal, código provincial o código seccion censal.
+
+ ![Imagen](./images/geostatsPlugin_VisualizacionDatos.png)
  
  ## Uso
  
@@ -21,7 +23,7 @@
  5. Se selecciona metodo de representación, número de intervalos y colores.
  6. Se representa la información.
  
- ![Imagen](./images/geostatsPlugin.png)
+ 
 
  Mediante configuración del plugin, o leyéndolo del WMC, pueden establecerse una serie de mapas base que se mostrarán de la siguiente manera.   
 
