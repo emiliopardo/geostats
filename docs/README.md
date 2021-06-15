@@ -50,32 +50,39 @@
       - Desviación estandar.
       - Progresión aritmética.
       - Progresion geométrica.
-      - Rupturas Naturales (Jenks)
+      - Rupturas Naturales (Jenks).
 
 
       ![Imagen](./images/geostatsPlugin_SeleccionMetodoClasificacion.png)
 
  
  
- 5. Para facilitar este paso 
- 6. Se representa la información.
+ 6. Selección de número de intervalos. Tras seleccionar el método de clasificación se puede definir un número de itervalos. Por defecto vienen definidos 5 intervalos.
+
+      ***En caso de haberse selecionado valores úncios en el método de clasificación se deshabilita la selección de número de intervalos.***
+
+ 7. Selección de color inicial y color final de los intervalos. EL plugin permite difinir un color inicial y un color final para crear una rampa de color.
+
+      Automaticamente se definirá la leyenda mostrando la rampa de color y los valores de corte de cada rango.
+
+      ***En caso de haberse selecionado valores úncios en el método de clasificación se deshabilita la selección de color inicial y color final.***
+
+
+      ***La leyenda es dinámica por lo que cualquier modificación en el metodo de clasificación, intervalos colores se verán reflejados de manera automática en esta***
+
+      ![Imagen](./images/geostatsPlugin_DefinicionRepresentacion.png)
+
+   8. Para finalizar con el proceso se deberá hacer clic en el botón Representar que se encuentra en la parte inferior del panel.
+
+      El resultado final es la visualización de los valores de la variable seleccionada en el csv en el visor los cuales han podido ser enlazados por medio del campo de enlace con la capa de información espacial.
+
+      ***Tanto los datos del csv como los elementos de la capa de información espacial que no han podido ser enlazados no se representan en el mapa.***      
+
+      ![Imagen](./images/geostatsPlugin_Representacion.png)
+
  
- 
-
- Mediante configuración del plugin, o leyéndolo del WMC, pueden establecerse una serie de mapas base que se mostrarán de la siguiente manera.
-  
-
- 
-
- También pueden predefinirse capas, así como su agrupación, que estáran disponibles para el usuario a través de la pestaña de "Favoritas"
-
- 
-
- ![Imagen](./images/geostatsPlugin_DefinicionRepresentacion.png)
-
- ![Imagen](./images/geostatsPlugin_Representacion.png)
-
- ![Imagen](./images/geostatsPlugin_VisualizacionDatos.png)
+ 9. Consulta de Información. Para poder consultar la información del fichero csv asociada a la capa en el visor solo es necesario pasar el raton por encima de cada elemento. Automáticamente se resaltara en rojo la geometria o elemento selecionado y se mostrará un popup con la información alfanumérica asociada.
+      ![Imagen](./images/geostatsPlugin_VisualizacionDatos.png)
 
 ## Recursos y configuración
 
@@ -83,7 +90,7 @@
 - css: geostats.min.css
 
 
-```
+```javascript
 //objeto configurador del plugin
 let vectorTileLayers = [
   {
