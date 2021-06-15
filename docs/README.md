@@ -187,3 +187,7 @@ map.addPlugin(mp);
 ## Generación MVT
 
 Para la generación de servicios de mapas en formato MVT se puede seguir el siguiente tutorial [Creación servicio de mapas MVT](https://github.com/emiliopardo/mvt_secciones_censales)
+
+
+
+https://github.com/emiliopardo/geostats/blob/master/docs/video/geostats-2021-06-15_13.37.58.mov
