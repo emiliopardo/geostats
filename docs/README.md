@@ -91,6 +91,7 @@
 
 
 ```javascript
+//el plugin por defecto toma como identificador único de cada feature el atributo id
 //objeto configurador del plugin
 let vectorTileLayers = [
   {
@@ -182,3 +183,7 @@ let vectorTileLayers = [
 const mp = new Geostats(vectorTileLayers);
 map.addPlugin(mp);
 ```
+
+## Generación MVT
+
+Para la generación de servicios de mapas en formato MVT se puede seguir el siguiente tutorial [Creación servicio de mapas MVT](https://github.com/emiliopardo/mvt_secciones_censales)
