@@ -18,22 +18,30 @@
 
  1. Se selecciona la capa de información espacial con la cual se quiere enlazar los datos.
  ![Imagen](./images/geostatsPlugin_SelecionCapa.png)
+
+ 2. Se selecciona el fichero csv que posee la información. El plugin hace una precarga donde se muestran las tres primeras lineas. En este momento será necesrio especificar si el csv posee cabecera y cuales son los campo de enlace o identificador único y la variable a representar.
+
+ ![Imagen](./images/geostatsPlugin_SeleccionCampos.png)
+
+ 3. Una vez definidos los parámetros de carga se cargará el CSV completo. En caso de que el fichero posea errores o este mal formado se mostrará un popup con los errores detectados. En caso contrario se mostrara un popup con los datos básicos obtenidos tras la carga del fichero tales como número de registros, delimitador, caracter de salto de linea, campo de enlace y campo de variable de representación.
+
+ ![Imagen](./images/geostatsPlugin_ErrorDatosCSV.png)
  
- 2. Se selecciona el fichero csv que posee la información.
- 3. Se informa si el csv posee cabecera o no.
- 4. Se define el campo de enlace o identificador único y la variable a representar.
- 5. Se selecciona metodo de representación, número de intervalos y colores.
+ ![Imagen](./images/geostatsPlugin_AnalisisDatosCSV.png)
+
+
+ 4. Se selecciona metodo de representación, número de intervalos y colores.
  6. Se representa la información.
  
  
 
  Mediante configuración del plugin, o leyéndolo del WMC, pueden establecerse una serie de mapas base que se mostrarán de la siguiente manera.   
 
- ![Imagen](./images/geostatsPlugin_SeleccionCampos.png)
+ 
 
  También pueden predefinirse capas, así como su agrupación, que estáran disponibles para el usuario a través de la pestaña de "Favoritas"
 
- ![Imagen](./images/geostatsPlugin_AnalisisDatosCSV.png)
+ 
 
  ![Imagen](./images/geostatsPlugin_DefinicionRepresentacion.png)
 
