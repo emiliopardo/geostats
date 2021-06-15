@@ -27,7 +27,7 @@
 
  ![Imagen](./images/geostatsPlugin_ErrorDatosCSV.png)
  
- [Imagen](./images/geostatsPlugin_AnalisisDatosCSV.png))
+ [Imagen](./images/geostatsPlugin_AnalisisDatosCSV.png)
 
 
  4. Se selecciona metodo de representación, número de intervalos y colores.
