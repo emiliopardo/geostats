@@ -17,25 +17,53 @@
  Los pasos necesarios para la la visualización final de la información estadística serian los siguientes:
 
  1. Se selecciona la capa de información espacial con la cual se quiere enlazar los datos.
- ![Imagen](./images/geostatsPlugin_SelecionCapa.png)
+      ![Imagen](./images/geostatsPlugin_SelecionCapa.png)
 
  2. Se selecciona el fichero csv que posee la información. El plugin hace una precarga donde se muestran las tres primeras lineas. En este momento será necesrio especificar si el csv posee cabecera y cuales son los campo de enlace o identificador único y la variable a representar.
 
- ![Imagen](./images/geostatsPlugin_SeleccionCampos.png)
+      ![Imagen](./images/geostatsPlugin_SeleccionCampos.png)
 
  3. Una vez definidos los parámetros de carga se cargará el CSV completo. En caso de que el fichero posea errores o este mal formado se mostrará un popup con los errores detectados. En caso contrario se mostrara un popup con los datos básicos obtenidos tras la carga del fichero tales como número de registros, delimitador, caracter de salto de linea, campo de enlace y campo de variable de representación.
 
- ![Imagen](./images/geostatsPlugin_ErrorDatosCSV.png)
+      ![Imagen](./images/geostatsPlugin_ErrorDatosCSV.png)
  
- [Imagen](./images/geostatsPlugin_AnalisisDatosCSV.png)
+      ![Imagen](./images/geostatsPlugin_AnalisisDatosCSV.png)
 
 
- 4. Se selecciona metodo de representación, número de intervalos y colores.
+ 4. Tras la finalización de la carga y para facilitar a seleción del metodo de clasificación. Se muestran los datos descriptivos básicos de la variable selecionada.
+
+      - valor mínimo.
+      - valor máximo.
+      - media.
+      - mediana.
+      - variancia.
+      - coeficiente de variación.
+      - desviación estandar. 
+
+      ![Imagen](./images/geostatsPlugin_DatosEstadisticosVariable.png)
+
+ 5. Selección del método de clasificación. los métodos definidos actualmente en el plugin son:
+
+      - Valores úncios.
+      - Intervalos iguales.
+      - Cuantiles.
+      - Desviación estandar.
+      - Progresión aritmética.
+      - Progresion geométrica.
+      - Rupturas Naturales (Jenks)
+
+
+      ![Imagen](./images/geostatsPlugin_SeleccionMetodoClasificacion.png)
+
+ 
+ 
+ 5. Para facilitar este paso 
  6. Se representa la información.
  
  
 
- Mediante configuración del plugin, o leyéndolo del WMC, pueden establecerse una serie de mapas base que se mostrarán de la siguiente manera.   
+ Mediante configuración del plugin, o leyéndolo del WMC, pueden establecerse una serie de mapas base que se mostrarán de la siguiente manera.
+  
 
  
 
@@ -48,8 +76,6 @@
  ![Imagen](./images/geostatsPlugin_Representacion.png)
 
  ![Imagen](./images/geostatsPlugin_VisualizacionDatos.png)
-
-![Imagen](./images/geostatsPlugin_VisualizacionDatos.png)
 
 ## Recursos y configuración
 
