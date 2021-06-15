@@ -225,6 +225,7 @@ export default class GeostatsControl extends M.Control {
         url: this.service_url,
         name: "Capa MVT",
         projection: "EPSG:3857",
+        extract: false,
       });
       this.map_.addLayers(this.mvt);
       this.mvt.applyStyle_(estilo);
@@ -483,14 +484,12 @@ export default class GeostatsControl extends M.Control {
   }
 
   loadLayer() {
-    let service_url = this.service_url;
-    let selectedFeture = null;
     let coordenada_X = null;
     let coordenada_Y = null;
     let popup = null;
-    let map = this.map_;
     let linkField = this.linkField;
     let dataField = this.dataField;
+    let map = this.map_;
     let selectedMethod = this.selectorMetodo.value;
     let color = this.serie.colors;
     let serie = this.serie;
@@ -506,6 +505,10 @@ export default class GeostatsControl extends M.Control {
       coordenada_X = e.coordinate[0];
       coordenada_Y = e.coordinate[1];
     });
+
+    map.on(M.evt.CLICK, (event) => {
+      console.log(event)
+    })
 
     capa.applyStyle_(
       new M.style.Polygon({
@@ -554,29 +557,9 @@ export default class GeostatsControl extends M.Control {
       //identificador unico features capas vector tiles
       let featureHover = feature[0].getAttribute("id");
       let indexLinkValue = linkValue.indexOf(parseInt(featureHover));
-      if (indexLinkValue != -1) {
-        selectedFeture = new M.layer.MVT({
-          url: service_url,
-          name: "Selected Feature",
-          projection: "EPSG:3857",
-        });
-        map.addLayers(selectedFeture);
-        selectedFeture.applyStyle_(
-          new M.style.Polygon({
-            fill: {
-              color: (feature) => {
-                //identificador unico features capas vector tiles
-                let feature_id = feature.getAttribute("id");
-                if (featureHover == feature_id) {
-                  return "red";
-                }
-                return
-              },
-            },
-          })
-        );
-        let nombre = feature[0].getAttribute("municipio");
 
+      if (indexLinkValue != -1) {
+        let nombre = feature[0].getAttribute("municipio");
         let myContent =
           "<table><thead></thead><tbody><tr><td class='geostats-popup-key'>\n" +
           "Municipio</td><td class='geostats-popup-value'>" +
@@ -600,15 +583,84 @@ export default class GeostatsControl extends M.Control {
         popup.addTab(featureTabOpts);
         map.addPopup(popup, [coordenada_X, coordenada_Y]);
       }
+
+      capa.applyStyle_(
+        new M.style.Polygon({
+          fill: {
+            color: (feature) => {
+              //identificador unico features capas vector tiles
+              let feature_id = feature.getAttribute("id");
+              let indexLinkValue = linkValue.indexOf(parseInt(feature_id));
+
+              let selectedColor = null;
+              if (featureHover == feature_id && indexLinkValue != -1) {
+                selectedColor = "#FF0000"
+              } else if (indexLinkValue != -1 && selectedMethod != "uniqueValues") {
+                selectedColor =
+                  color[serie.getRangeNum(dataValue[indexLinkValue])];
+              } else if (
+                indexLinkValue != -1 &&
+                selectedMethod == "uniqueValues"
+              ) {
+                let bounds = serie.bounds;
+                let value = dataValue[indexLinkValue];
+                let indexBounds = bounds.indexOf(value);
+                selectedColor = color[indexBounds];
+              } else {
+                selectedColor = null;
+              }
+              return selectedColor;
+            },
+            opacity: 0.9,
+          },
+          stroke: {
+            color: "#cccccc",
+            width: 0.5,
+          },
+        })
+      );
     });
 
-    capa.on(M.evt.LEAVE_FEATURES, function (feature) {
+    capa.on(M.evt.LEAVE_FEATURES, function () {
       if (popup) {
         map.removePopup(popup);
       }
-      if (selectedFeture) {
-        map.removeLayers(selectedFeture);
-      }
+
+
+      capa.applyStyle_(
+        new M.style.Polygon({
+          fill: {
+            color: (feature) => {
+              //identificador unico features capas vector tiles
+              let feature_id = feature.getAttribute("id");
+              let indexLinkValue = linkValue.indexOf(parseInt(feature_id));
+
+              let selectedColor = null;
+
+              if (indexLinkValue != -1 && selectedMethod != "uniqueValues") {
+                selectedColor =
+                  color[serie.getRangeNum(dataValue[indexLinkValue])];
+              } else if (
+                indexLinkValue != -1 &&
+                selectedMethod == "uniqueValues"
+              ) {
+                let bounds = serie.bounds;
+                let value = dataValue[indexLinkValue];
+                let indexBounds = bounds.indexOf(value);
+                selectedColor = color[indexBounds];
+              } else {
+                selectedColor = null;
+              }
+              return selectedColor;
+            },
+            opacity: 0.9,
+          },
+          stroke: {
+            color: "#cccccc",
+            width: 0.5,
+          },
+        })
+      );
     });
   }
 }

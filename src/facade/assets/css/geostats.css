@@ -1,3 +1,7 @@
+.m-popup-closer{
+  display: none;
+}
+
 div.m-panel.m-panzoombar.opened.no-collapsible {
   margin-left: 80px !important;
 }
