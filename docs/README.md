@@ -12,25 +12,27 @@
  
  ## Uso
  
- Salvo el selector de capas todos los input se encuentran deshabilitados hasta que no se ha completado o selecionado los datos previos para su uso
+ Salvo el selector de capas todos los input se encuentran deshabilitados hasta que no se hayan completado los pasos previos necesarios.
 
  Los pasos necesarios para la la visualización final de la información estadística serian los siguientes:
 
  1. Se selecciona la capa de información espacial con la cual se quiere enlazar los datos.
       ![Imagen](./images/geostatsPlugin_SelecionCapa.png)
 
- 2. Se selecciona el fichero csv que posee la información. El plugin hace una precarga donde se muestran las tres primeras lineas. En este momento será necesrio especificar si el csv posee cabecera y cuales son los campo de enlace o identificador único y la variable a representar.
+ 2. Se selecciona el fichero csv que posee la información. El plugin hace una precarga donde se muestran las tres primeras lineas. En este momento será necesario especificar si el csv posee cabecera y cuales son los campo de enlace o identificador único y la variable a representar.
 
       ![Imagen](./images/geostatsPlugin_SeleccionCampos.png)
 
- 3. Una vez definidos los parámetros de carga se cargará el CSV completo. En caso de que el fichero posea errores o este mal formado se mostrará un popup con los errores detectados. En caso contrario se mostrara un popup con los datos básicos obtenidos tras la carga del fichero tales como número de registros, delimitador, caracter de salto de linea, campo de enlace y campo de variable de representación.
+ 3. Una vez definidos los parámetros de carga se analizará el CSV completo. En caso de que el fichero posea errores o este mal formado se mostrará un popup con los errores detectados. 
+ 
+    En caso contrario se mostrara un popup con los datos básicos obtenidos tras la carga del fichero tales como número de registros, delimitador, caracter de salto de linea, campo de enlace y campo de variable de representación.
 
       ![Imagen](./images/geostatsPlugin_ErrorDatosCSV.png)
  
       ![Imagen](./images/geostatsPlugin_AnalisisDatosCSV.png)
 
 
- 4. Tras la finalización de la carga y para facilitar a seleción del metodo de clasificación. Se muestran los datos descriptivos básicos de la variable selecionada.
+ 4. Tras la finalización de la carga y para facilitar la selección del método de clasificación. Se muestran los datos descriptivos básicos de la variable selecionada.
 
       - valor mínimo.
       - valor máximo.
@@ -72,16 +74,16 @@
 
       ![Imagen](./images/geostatsPlugin_DefinicionRepresentacion.png)
 
-   8. Para finalizar con el proceso se deberá hacer clic en el botón Representar que se encuentra en la parte inferior del panel.
+   8. Para finalizar con el proceso se deberá hacer clic en el botón ***Representar*** que se encuentra en la parte inferior del panel.
 
-      El resultado final es la visualización de los valores de la variable seleccionada en el csv en el visor los cuales han podido ser enlazados por medio del campo de enlace con la capa de información espacial.
+      El resultado final es la representación de la variable seleccionada según el método de clasificación, rangos y rampa de color. 
 
       ***Tanto los datos del csv como los elementos de la capa de información espacial que no han podido ser enlazados no se representan en el mapa.***      
 
       ![Imagen](./images/geostatsPlugin_Representacion.png)
 
  
- 9. Consulta de Información. Para poder consultar la información del fichero csv asociada a la capa en el visor solo es necesario pasar el raton por encima de cada elemento. Automáticamente se resaltara en rojo la geometria o elemento selecionado y se mostrará un popup con la información alfanumérica asociada.
+ 9. Consulta de Información. Para poder consultar la información del fichero csv asociada a la capa en el visor solo es necesario pasar el raton por encima de cada elemento. Automáticamente se resaltara en rojo la geometría o elemento selecionado y se mostrará un popup con la información alfanumérica asociada.
       ![Imagen](./images/geostatsPlugin_VisualizacionDatos.png)
 
 ## Recursos y configuración
@@ -183,6 +185,11 @@ let vectorTileLayers = [
 const mp = new Geostats(vectorTileLayers);
 map.addPlugin(mp);
 ```
+
+## Video Demo
+
+Para comprobar el funcionamiento de este plugin se puede descargar el 
+[Video](https://github.com/emiliopardo/geostats/blob/master/docs/video/) el cual contempla cada unod e los pasos descritos en esta página
 
 ## Generación MVT
 
