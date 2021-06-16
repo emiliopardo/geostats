@@ -182,7 +182,7 @@ let vectorTileLayers = [
   },
 ];
 
-const mp = new Geostats(vectorTileLayers);
+const mp = new M.plugin.Geostats(vectorTileLayers);
 map.addPlugin(mp);
 ```
 
