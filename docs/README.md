@@ -189,7 +189,7 @@ map.addPlugin(mp);
 ## Video Demo
 
 Para comprobar el funcionamiento de este plugin se puede descargar el 
-[Video](https://github.com/emiliopardo/geostats/blob/master/docs/video/geostats_demo_2.mp4?raw=true) el cual contempla cada unod e los pasos descritos en esta página
+[Video](https://github.com/emiliopardo/geostats/blob/master/docs/video/geostats-2021-06-15_13.37.58.mov?raw=true) el cual contempla cada unod e los pasos descritos en esta página
 
 ## Generación MVT
 
